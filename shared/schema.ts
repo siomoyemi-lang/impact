@@ -132,7 +132,9 @@ export const resultsRelations = relations(results, ({ one }) => ({
 
 export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true });
 export const insertParentSchema = createInsertSchema(parents).omit({ id: true, createdAt: true });
-export const insertStudentSchema = createInsertSchema(students).omit({ id: true, createdAt: true });
+export const insertStudentSchema = createInsertSchema(students).omit({ id: true, createdAt: true }).extend({
+  parentEmail: z.string().email().optional(),
+});
 export const insertParentStudentSchema = createInsertSchema(parentStudents).omit({ id: true });
 export const insertBillSchema = createInsertSchema(bills).omit({ id: true, createdAt: true });
 export const insertReceiptSchema = createInsertSchema(receipts).omit({ id: true, createdAt: true, status: true }); // Status is set by admin

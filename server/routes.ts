@@ -119,7 +119,16 @@ export async function registerRoutes(
   app.post(api.admin.createStudent.path, requireAdmin, async (req, res) => {
     try {
       const input = api.admin.createStudent.input.parse(req.body);
-      const student = await storage.createStudent(input);
+      const { parentEmail, ...studentData } = input;
+      const student = await storage.createStudent(studentData);
+      
+      if (parentEmail) {
+        const parent = await storage.getParentByEmail(parentEmail);
+        if (parent) {
+          await storage.linkParentToStudent(parent.id, student.id);
+        }
+      }
+      
       res.status(201).json(student);
     } catch (err) {
       if (err instanceof z.ZodError) return res.status(400).json({ message: err.errors[0].message });
