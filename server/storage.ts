@@ -39,6 +39,7 @@ export interface IStorage {
   // Results
   createResult(result: InsertResult): Promise<Result>;
   getResultsByStudentId(studentId: number): Promise<Result[]>;
+  getUsersByRole(role: "ADMIN" | "PARENT"): Promise<User[]>;
   
   // Session Store
   sessionStore: any;
@@ -56,6 +57,10 @@ export class DatabaseStorage implements IStorage {
   async getUserByEmail(email: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.email, email));
     return user;
+  }
+
+  async getUsersByRole(role: "ADMIN" | "PARENT"): Promise<User[]> {
+    return await db.select().from(users).where(eq(users.role, role)).orderBy(desc(users.createdAt));
   }
 
   async createUser(user: InsertUser & { role: "ADMIN" | "PARENT" }): Promise<User> {

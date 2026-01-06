@@ -120,20 +120,30 @@ export async function registerRoutes(
     try {
       const input = api.admin.createStudent.input.parse(req.body);
       const { parentEmail, ...studentData } = input;
-      const student = await storage.createStudent(studentData);
       
       if (parentEmail) {
         const parent = await storage.getParentByEmail(parentEmail);
-        if (parent) {
-          await storage.linkParentToStudent(parent.id, student.id);
+        if (!parent) {
+          return res.status(404).json({ message: `No parent found with email: ${parentEmail}. Please create the parent account first.` });
         }
+        const student = await storage.createStudent(studentData);
+        await storage.linkParentToStudent(parent.id, student.id);
+        res.status(201).json(student);
+      } else {
+        const student = await storage.createStudent(studentData);
+        res.status(201).json(student);
       }
-      
-      res.status(201).json(student);
     } catch (err) {
       if (err instanceof z.ZodError) return res.status(400).json({ message: err.errors[0].message });
       res.status(500).json({ message: (err as Error).message });
     }
+  });
+
+  app.get(api.admin.listUsersByRole.path, requireAdmin, async (req, res) => {
+    const role = req.params.role as "ADMIN" | "PARENT";
+    if (role !== "ADMIN" && role !== "PARENT") return res.status(400).json({ message: "Invalid role" });
+    const users = await storage.getUsersByRole(role);
+    res.json(users);
   });
 
   app.post(api.admin.linkParent.path, requireAdmin, async (req, res) => {

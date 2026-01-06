@@ -117,6 +117,7 @@ export const api = {
       responses: {
         201: z.custom<typeof students.$inferSelect>(),
         400: errorSchemas.validation,
+        404: errorSchemas.notFound,
       },
     },
     linkParent: {
@@ -161,6 +162,13 @@ export const api = {
       path: '/api/admin/receipts',
       responses: {
         200: z.array(z.custom<typeof receipts.$inferSelect & { bill: typeof bills.$inferSelect, uploadedBy: typeof parents.$inferSelect }>()),
+      },
+    },
+    listUsersByRole: {
+      method: 'GET' as const,
+      path: '/api/admin/users/:role',
+      responses: {
+        200: z.array(z.custom<typeof users.$inferSelect>()),
       },
     },
     updateReceiptStatus: {
