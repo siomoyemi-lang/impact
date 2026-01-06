@@ -1,10 +1,22 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api, buildUrl } from "@shared/routes";
 import { useToast } from "@/hooks/use-toast";
-import { insertUserSchema, insertStudentSchema, insertBillSchema, insertResultSchema } from "@shared/schema";
+import { insertUserSchema, insertStudentSchema, insertBillSchema, insertResultSchema, type User } from "@shared/schema";
 import type { z } from "zod";
 
 // --- Users ---
+export function useUsersByRole(role: "ADMIN" | "PARENT") {
+  return useQuery<User[]>({
+    queryKey: [buildUrl(api.admin.listUsersByRole.path, { role })],
+    queryFn: async () => {
+      const url = buildUrl(api.admin.listUsersByRole.path, { role });
+      const res = await fetch(url, { credentials: "include" });
+      if (!res.ok) throw new Error("Failed to fetch users");
+      return api.admin.listUsersByRole.responses[200].parse(await res.json());
+    },
+  });
+}
+
 export function useCreateUser() {
   const queryClient = useQueryClient();
   const { toast } = useToast();

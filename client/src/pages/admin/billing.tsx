@@ -84,7 +84,7 @@ export default function AdminBilling() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {students?.map((s) => (
+                            {students?.map((s: any) => (
                               <SelectItem key={s.id} value={String(s.id)}>
                                 {s.fullName} ({s.admissionNumber})
                               </SelectItem>
