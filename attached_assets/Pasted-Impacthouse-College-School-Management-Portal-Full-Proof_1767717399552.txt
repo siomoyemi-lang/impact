@@ -1,0 +1,233 @@
+Impacthouse College School Management Portal – Full-Proofed Build Prompt
+
+Build a secure, full-stack school management portal called Impacthouse College with these requirements:
+
+1. Tech Stack
+
+Frontend: React + Vite, Tailwind CSS, shadcn/ui
+
+Backend: Node.js + Express, Passport.js Local Strategy
+
+Database: PostgreSQL with Drizzle ORM
+
+File uploads: Multer, with configurable upload directory
+
+Session storage: PostgreSQL-backed sessions
+
+Environment-agnostic: Works on Replit, VS Code locally, or any server
+
+2. User Roles
+
+ADMIN: Full system access; can create parents & other admins, manage students, upload results, generate bills, approve/reject receipts
+
+PARENT: Limited to viewing linked wards, bills, receipts, and academic results
+
+3. Authentication & Authorization
+
+Single login page for all users
+
+Email + password authentication
+
+Role resolved server-side after login → redirect:
+
+Admin → /admin/dashboard
+
+Parent → /parent/dashboard
+
+No client-side role selection or hidden toggles
+
+First admin seeded manually (siomoyemi@gmail.com) via one-time seed script
+
+Passwords hashed with bcrypt (12+ rounds)
+
+HTTP-only, Secure cookies (production only) for sessions
+
+Session timeout & auto-logout for inactivity (e.g., 30 minutes)
+
+CSRF protection on all state-changing routes
+
+Strict role-based middleware on all API endpoints
+
+Password policy: Minimum length 12, at least one uppercase, one number, one symbol
+
+Account lockout after 5 failed login attempts to prevent brute force
+
+Force password change on first login for seeded accounts
+
+4. Database Schema (Drizzle + PostgreSQL)
+
+users → id (UUID), email, password_hash, role
+
+parents → id (UUID), user_id → users.id
+
+students → id, full_name, class, admission_number
+
+parent_students → parent_id → parents.id, student_id → students.id
+
+bills → id, student_id, amount, term, document_url, status (PENDING/PAID)
+
+receipts → id, bill_id, uploaded_by_parent_id, file_url, status (PENDING/APPROVED/REJECTED)
+
+results → id, student_id, term, file_url
+
+5. Backend Routes
+
+Auth: /auth/login (POST), /auth/logout (POST), /auth/me (GET)
+
+Admin: /admin/students (POST), /admin/link-parent (POST), /admin/bills (POST), /admin/results (POST), /admin/receipts (GET), /admin/receipts/:id (PATCH), /admin/users/parent (POST), /admin/users/admin (POST)
+
+Parent: /parent/wards (GET), /parent/bills (GET), /parent/receipts (POST), /parent/results/:studentId (GET)
+
+Every route enforces:
+
+Authentication
+
+Role
+
+Ownership / scoped access
+
+Rate limiting (e.g., 100 requests per 10 minutes per IP for sensitive routes)
+
+6. Frontend
+
+Login Page: Split-screen layout
+
+Left: Login/Register form
+
+Right: Branding (“Secure Access” & “Easy Tracking”)
+
+Dashboard: Sidebar-driven, role-aware content
+
+Admin Sidebar: Student Directory, Billing Overview, Receipt Approvals, Result Uploads, User Management (Add Parent, Add Admin, View Users)
+
+Parent Sidebar: My Wards, Bills & Payments, Academic Results
+
+Redirect logic based on role from backend response
+
+Error messages stay inside cards
+
+Branding panel never scrolls
+
+7. File Uploads
+
+Multer for PDF, PNG, JPG
+
+Files renamed with UUIDs
+
+Receipt approval changes only status, never the file
+
+Upload directory configurable via environment variable
+
+File size limits: 10 MB per file (configurable)
+
+Virus scanning recommended (optional for production)
+
+Serve files through authenticated routes, never public URLs
+
+8. Environment Variables
+
+NODE_ENV, PORT, DATABASE_URL, SESSION_SECRET, UPLOAD_DIR, VITE_API_URL
+
+Code uses only environment variables, no platform-specific assumptions
+
+Example .env.example provided
+
+9. Security Measures (Full-Proofed)
+
+Backend
+
+Role-based access control enforced on all endpoints
+
+CSRF protection
+
+HTTP-only & Secure cookies
+
+Rate limiting per IP
+
+Input validation & sanitization to prevent XSS & SQL Injection
+
+Password hashing with bcrypt (12+)
+
+Account lockout on multiple failed login attempts
+
+Force password reset for temporary credentials
+
+No role elevation via frontend or API
+
+Frontend
+
+No hidden admin toggles
+
+Role-aware UI, but security enforced on backend
+
+Prevent storing secrets in client code
+
+Escape all user input displayed
+
+File Handling
+
+Validate MIME types
+
+Restrict file extensions
+
+Store files outside web root or behind authenticated endpoints
+
+Scan files for malware (optional, for production)
+
+Database
+
+Prepared statements / Drizzle ORM to prevent SQL Injection
+
+Scoped queries to prevent data leaks
+
+UUIDs for all primary keys
+
+Deployment
+
+HTTPS only in production
+
+Session cookies secure in production
+
+Environment separation (development vs production)
+
+Logs exclude sensitive info
+
+Seed scripts removed/locked after initial admin creation
+
+10. Seed Script
+
+Create first admin: siomoyemi@gmail.com with strong temporary password
+
+One-time run → disable or delete after use
+
+Enforces secure first-admin setup
+
+11. Folder Structure
+impacthouse-portal/
+├── backend/
+│   ├── src/
+│   ├── scripts/           # seed scripts, migrations
+│   ├── package.json
+│   └── drizzle.config.ts
+├── frontend/
+│   ├── src/
+│   ├── index.html
+│   └── package.json
+├── .env.example
+└── README.md
+
+12. Deliverables
+
+Fully working frontend & backend
+
+Seed script for initial admin
+
+Environment-agnostic configuration
+
+Tailwind + shadcn styling
+
+Complete authentication & role-based authorization
+
+Ready to run on Replit, VS Code, or any server
+
+Full security coverage: CSRF, XSS/SQL Injection prevention, account lockout, HTTPS, secure file handling, rate limiting

@@ -1,0 +1,93 @@
+Build a full-stack school management portal called "Impacthouse College" with these requirements:
+
+1. **Tech Stack**
+   - Frontend: React + Vite, Tailwind CSS, shadcn/ui
+   - Backend: Node.js + Express, Passport.js Local Strategy
+   - Database: PostgreSQL with Drizzle ORM
+   - File uploads: Multer, with configurable upload directory
+   - Session storage: PostgreSQL-backed sessions
+   - Environment-agnostic: Works on Replit, VS Code locally, or any server
+
+2. **User Roles**
+   - ADMIN: full system access, can create parents and other admins, manage students, upload results, generate bills, approve/reject receipts
+   - PARENT: limited to viewing linked wards, bills, receipts, and academic results
+
+3. **Authentication**
+   - Single login page for both roles
+   - Email + password authentication
+   - Role returned by server after login determines dashboard redirect
+   - Admin → `/admin/dashboard`, Parent → `/parent/dashboard`
+   - No client-side role selection, no hidden toggles
+   - First admin is seeded manually (`siomoyemi@gmail.com`) via one-time seed script
+   - Passwords hashed with bcrypt
+   - HTTP-only session cookies
+
+4. **Database Schema (Drizzle + PostgreSQL)**
+   - `users` → id (UUID), email, password_hash, role
+   - `parents` → id (UUID), user_id → users.id
+   - `students` → id, full_name, class, admission_number
+   - `parent_students` → parent_id → parents.id, student_id → students.id
+   - `bills` → id, student_id, amount, term, document_url, status (PENDING/PAID)
+   - `receipts` → id, bill_id, uploaded_by_parent_id, file_url, status (PENDING/APPROVED/REJECTED)
+   - `results` → id, student_id, term, file_url
+
+5. **Backend Routes**
+   - Auth: `/auth/login` (POST), `/auth/logout` (POST)
+   - Admin: `/admin/students` (POST), `/admin/link-parent` (POST), `/admin/bills` (POST), `/admin/results` (POST), `/admin/receipts` (GET), `/admin/receipts/:id` (PATCH), `/admin/users/parent` (POST), `/admin/users/admin` (POST)
+   - Parent: `/parent/wards` (GET), `/parent/bills` (GET), `/parent/receipts` (POST), `/parent/results/:studentId` (GET)
+   - Every route enforces authentication, role, and ownership
+
+6. **Frontend**
+   - Login Page: Split-screen layout, left panel = Login/Register form, right panel = branding with "Secure Access" and "Easy Tracking"
+   - Dashboard: Sidebar-driven, role-aware content
+     - Admin sidebar: Student Directory, Billing Overview, Receipt Approvals, Result Uploads, User Management (Add Parent, Add Admin, View Users)
+     - Parent sidebar: My Wards, Bills & Payments, Academic Results
+   - Redirect logic based on role from backend response
+   - Error messages stay inside cards, branding panel never scrolls
+
+7. **File Uploads**
+   - Multer for PDFs, PNGs, JPGs
+   - Files renamed with UUIDs
+   - Receipt approval changes only status, never the file
+   - Upload directory configurable via environment variable
+
+8. **Environment Variables**
+   - NODE_ENV, PORT, DATABASE_URL, SESSION_SECRET, UPLOAD_DIR, VITE_API_URL
+   - Code must use only env vars; no platform-specific assumptions (Replit, VS Code, VPS)
+   - Example `.env.example` provided
+
+9. **Security**
+   - Role-based access enforced in backend
+   - No public registration for admins
+   - Parents cannot create users
+   - CSRF protection
+   - Strict separation between users, students, and parents
+   - Admin creation only via seed script or admin-created route
+
+10. **Seed Script**
+    - Create first admin: `siomoyemi@gmail.com` with strong temporary password
+    - One-time run, then disable or delete
+
+11. **Folder Structure**
+    ```
+    impacthouse-portal/
+    ├── backend/
+    │   ├── src/
+    │   ├── scripts/           # seed scripts, migrations
+    │   ├── package.json
+    │   └── drizzle.config.ts
+    ├── frontend/
+    │   ├── src/
+    │   ├── index.html
+    │   └── package.json
+    ├── .env.example
+    └── README.md
+    ```
+
+12. **Deliverables**
+    - Fully working frontend & backend
+    - Seed script for initial admin
+    - Environment-agnostic configuration
+    - Tailwind + shadcn styling
+    - Complete auth and role-based authorization
+    - Ready to run on Replit, VS Code, or server
