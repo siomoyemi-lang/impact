@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, UserPlus } from "lucide-react";
+import { Plus, UserPlus, Trash } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertStudentSchema } from "@shared/schema";
@@ -48,6 +48,29 @@ export default function StudentDirectory() {
   const updateMutation = useUpdateStudent();
   const deleteMutation = useDeleteStudent();
   const [editOpen, setEditOpen] = useState(false);
+  
+  function DeleteStudentButton({ student }: { student: any }) {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <Button variant="destructive" size="sm" onClick={() => setOpen(true)}>
+          <Trash className="w-4 h-4 mr-2" />Delete
+        </Button>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Delete student {student.fullName}?</DialogTitle>
+            </DialogHeader>
+            <div className="py-4">This will permanently remove the student record and related data. This action cannot be undone.</div>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+              <Button variant="destructive" onClick={() => { deleteMutation.mutate({ id: student.id }); setOpen(false); }}>Delete</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </>
+    );
+  }
   const editForm = useForm<z.infer<typeof insertStudentSchema>>({
     resolver: zodResolver(insertStudentSchema),
   });
@@ -218,9 +241,7 @@ export default function StudentDirectory() {
                         <Button variant="ghost" size="sm" onClick={() => openEditModal(student)}>
                           Edit
                         </Button>
-                        <Button variant="destructive" size="sm" onClick={() => { if (confirm(`Delete student ${student.fullName}? This cannot be undone.`)) { deleteMutation.mutate({ id: student.id }); } }}>
-                          Delete
-                        </Button>
+                        <DeleteStudentButton student={student} />
                       </div>
                     </TableCell>
                   </TableRow>
