@@ -66,8 +66,12 @@ app.use((req, res, next) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
 
+    // Send JSON error response to the client. Do NOT rethrow the error here;
+    // rethrowing causes Vite's dev middleware to capture it and return the
+    // HTML runtime error overlay (which breaks API clients expecting JSON).
     res.status(status).json({ message });
-    throw err;
+    // Log the error server-side for debugging
+    console.error(err);
   });
 
   // importantly only setup vite in development and after
