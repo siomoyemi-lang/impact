@@ -92,8 +92,21 @@ export class DatabaseStorage implements IStorage {
     return newStudent;
   }
 
-  async getAllStudents(): Promise<Student[]> {
-    return await db.select().from(students).orderBy(desc(students.createdAt));
+  async getAllStudents(): Promise<(Student & { parentEmail?: string })[]> {
+    const rows = await db.select({
+      student: students,
+      parentUser: users
+    })
+    .from(students)
+    .leftJoin(parentStudents, eq(students.id, parentStudents.studentId))
+    .leftJoin(parents, eq(parentStudents.parentId, parents.id))
+    .leftJoin(users, eq(parents.userId, users.id))
+    .orderBy(desc(students.createdAt));
+    
+    return rows.map(r => ({
+      ...r.student,
+      parentEmail: r.parentUser?.email || undefined
+    }));
   }
 
   async getStudent(id: number): Promise<Student | undefined> {

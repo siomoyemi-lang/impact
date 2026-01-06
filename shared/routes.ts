@@ -107,7 +107,7 @@ export const api = {
       method: 'GET' as const,
       path: '/api/admin/students',
       responses: {
-        200: z.array(z.custom<typeof students.$inferSelect>()),
+        200: z.array(z.custom<typeof students.$inferSelect & { parentEmail?: string }>()),
       },
     },
     createStudent: {

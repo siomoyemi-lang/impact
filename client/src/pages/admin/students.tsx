@@ -123,6 +123,17 @@ export default function StudentDirectory() {
                       </FormItem>
                     )}
                   />
+                  <FormField
+                    control={createForm.control}
+                    name="parentEmail"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Parent Email (Optional)</FormLabel>
+                        <FormControl><Input placeholder="parent@example.com" {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <Button type="submit" className="w-full" disabled={createStudentMutation.isPending}>
                     {createStudentMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Create Record
@@ -139,6 +150,7 @@ export default function StudentDirectory() {
               <TableRow>
                 <TableHead>Admission No</TableHead>
                 <TableHead>Name</TableHead>
+                <TableHead>Parent</TableHead>
                 <TableHead>Class</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -146,17 +158,26 @@ export default function StudentDirectory() {
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8 text-slate-500">Loading students...</TableCell>
+                  <TableCell colSpan={5} className="text-center py-8 text-slate-500">Loading students...</TableCell>
                 </TableRow>
               ) : students?.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center py-8 text-slate-500">No students found.</TableCell>
+                  <TableCell colSpan={5} className="text-center py-8 text-slate-500">No students found.</TableCell>
                 </TableRow>
               ) : (
-                students?.map((student) => (
+                students?.map((student: any) => (
                   <TableRow key={student.id}>
                     <TableCell className="font-mono">{student.admissionNumber}</TableCell>
                     <TableCell className="font-medium text-slate-900">{student.fullName}</TableCell>
+                    <TableCell>
+                      {student.parentEmail ? (
+                        <span className="text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded-md">
+                          {student.parentEmail}
+                        </span>
+                      ) : (
+                        <span className="text-sm text-slate-400 italic">Unlinked</span>
+                      )}
+                    </TableCell>
                     <TableCell>{student.className}</TableCell>
                     <TableCell className="text-right">
                       <Button variant="outline" size="sm" onClick={() => openLinkModal(student.id)}>
