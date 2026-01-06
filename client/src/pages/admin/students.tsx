@@ -1,5 +1,5 @@
 import { AdminLayout } from "@/components/layout-admin";
-import { useStudents, useCreateStudent, useLinkParent } from "@/hooks/use-admin";
+import { useStudents, useCreateStudent, useLinkParent, useDeleteStudent } from "@/hooks/use-admin";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -12,6 +12,7 @@ import { insertStudentSchema } from "@shared/schema";
 import { z } from "zod";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useUpdateStudent } from "@/hooks/use-admin";
 
 const linkParentSchema = z.object({
   parentEmail: z.string().email("Invalid email"),
@@ -44,11 +45,40 @@ export default function StudentDirectory() {
     },
   });
 
+  const updateMutation = useUpdateStudent();
+  const deleteMutation = useDeleteStudent();
+  const [editOpen, setEditOpen] = useState(false);
+  const editForm = useForm<z.infer<typeof insertStudentSchema>>({
+    resolver: zodResolver(insertStudentSchema),
+  });
+
   function onCreateSubmit(data: z.infer<typeof insertStudentSchema>) {
     createStudentMutation.mutate(data, {
       onSuccess: () => {
         setCreateOpen(false);
         createForm.reset();
+      }
+    });
+  }
+
+  function openEditModal(student: any) {
+    editForm.reset({
+      fullName: student.fullName,
+      admissionNumber: student.admissionNumber,
+      className: student.className,
+      parentEmail: student.parentEmail || undefined,
+    });
+    setSelectedStudent(student.id);
+    setEditOpen(true);
+  }
+
+  function onEditSubmit(data: z.infer<typeof insertStudentSchema>) {
+    if (!selectedStudent) return;
+    updateMutation.mutate({ id: selectedStudent, data }, {
+      onSuccess: () => {
+        setEditOpen(false);
+        editForm.reset();
+        setSelectedStudent(null);
       }
     });
   }
@@ -180,10 +210,18 @@ export default function StudentDirectory() {
                     </TableCell>
                     <TableCell>{student.className}</TableCell>
                     <TableCell className="text-right">
-                      <Button variant="outline" size="sm" onClick={() => openLinkModal(student.id)}>
-                        <UserPlus className="w-4 h-4 mr-2" />
-                        Link Parent
-                      </Button>
+                      <div className="flex justify-end gap-2">
+                        <Button variant="outline" size="sm" onClick={() => openLinkModal(student.id)}>
+                          <UserPlus className="w-4 h-4 mr-2" />
+                          Link Parent
+                        </Button>
+                        <Button variant="ghost" size="sm" onClick={() => openEditModal(student)}>
+                          Edit
+                        </Button>
+                        <Button variant="destructive" size="sm" onClick={() => { if (confirm(`Delete student ${student.fullName}? This cannot be undone.`)) { deleteMutation.mutate({ id: student.id }); } }}>
+                          Delete
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))
@@ -215,6 +253,66 @@ export default function StudentDirectory() {
               <Button type="submit" className="w-full" disabled={linkParentMutation.isPending}>
                 {linkParentMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Link Parent
+              </Button>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Student</DialogTitle>
+          </DialogHeader>
+          <Form {...editForm}>
+            <form onSubmit={editForm.handleSubmit(onEditSubmit)} className="space-y-4">
+              <FormField
+                control={editForm.control}
+                name="fullName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Full Name</FormLabel>
+                    <FormControl><Input {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={editForm.control}
+                name="admissionNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Admission Number</FormLabel>
+                    <FormControl><Input {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={editForm.control}
+                name="className"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Class</FormLabel>
+                    <FormControl><Input {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={editForm.control}
+                name="parentEmail"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Parent Email (Optional)</FormLabel>
+                    <FormControl><Input placeholder="parent@example.com" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full" disabled={updateMutation.isPending}>
+                {updateMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Save Changes
               </Button>
             </form>
           </Form>

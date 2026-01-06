@@ -68,6 +68,32 @@ export class DatabaseStorage implements IStorage {
     return newUser;
   }
 
+  async updateUserPassword(userId: number, hashedPassword: string): Promise<void> {
+    await db.update(users).set({ password: hashedPassword }).where(eq(users.id, userId));
+  }
+
+  async updateUserEmail(userId: number, email: string): Promise<User> {
+    const [updated] = await db.update(users).set({ email }).where(eq(users.id, userId)).returning();
+    return updated;
+  }
+
+  async deleteUser(userId: number): Promise<void> {
+    // If this user is a parent, clean up parent-related records first
+    const parentRow = await db.select().from(parents).where(eq(parents.userId, userId));
+    if (parentRow.length > 0) {
+      const parentId = parentRow[0].id;
+      // delete receipts uploaded by this parent
+      await db.delete(receipts).where(eq(receipts.uploadedByParentId, parentId));
+      // delete parent-student links
+      await db.delete(parentStudents).where(eq(parentStudents.parentId, parentId));
+      // delete parent record
+      await db.delete(parents).where(eq(parents.id, parentId));
+    }
+
+    // Finally delete the user
+    await db.delete(users).where(eq(users.id, userId));
+  }
+
   // --- Parent & Student ---
   async createParent(userId: number): Promise<Parent> {
     const [parent] = await db.insert(parents).values({ userId }).returning();
@@ -117,6 +143,31 @@ export class DatabaseStorage implements IStorage {
   async getStudent(id: number): Promise<Student | undefined> {
     const [student] = await db.select().from(students).where(eq(students.id, id));
     return student;
+  }
+
+  async updateStudent(id: number, updates: Partial<InsertStudent>): Promise<Student> {
+    const [updated] = await db.update(students).set(updates).where(eq(students.id, id)).returning();
+    return updated;
+  }
+
+  async deleteStudent(studentId: number): Promise<void> {
+    // Delete receipts associated with bills for this student
+    const billsForStudent = await db.select().from(bills).where(eq(bills.studentId, studentId));
+    for (const b of billsForStudent) {
+      await db.delete(receipts).where(eq(receipts.billId, b.id));
+    }
+
+    // Delete bills
+    await db.delete(bills).where(eq(bills.studentId, studentId));
+
+    // Delete results for this student
+    await db.delete(results).where(eq(results.studentId, studentId));
+
+    // Delete parent-student links
+    await db.delete(parentStudents).where(eq(parentStudents.studentId, studentId));
+
+    // Finally delete student
+    await db.delete(students).where(eq(students.id, studentId));
   }
 
   async linkParentToStudent(parentId: number, studentId: number): Promise<void> {

@@ -1,25 +1,92 @@
 import { AdminLayout } from "@/components/layout-admin";
-import { useCreateUser, useUsersByRole } from "@/hooks/use-admin";
+import { useCreateUser, useUsersByRole, useChangeUserPassword, useUpdateUser, useDeleteUser } from "@/hooks/use-admin";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import PasswordInput from "@/components/ui/password-input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Mail, Shield, User } from "lucide-react";
+import { Loader2, Mail, Shield, User, Edit, Trash } from "lucide-react";
 
 const userSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  password: z.string()
+    .min(12, "Password must be at least 12 characters")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number")
+    .regex(/[^A-Za-z0-9]/, "Password must contain at least one symbol"),
 });
 
 export default function UserManagement() {
   const createUserMutation = useCreateUser();
   const { data: parents, isLoading: loadingParents } = useUsersByRole("PARENT");
   const { data: admins, isLoading: loadingAdmins } = useUsersByRole("ADMIN");
+  const changePasswordMutation = useChangeUserPassword();
+  const updateUserMutation = useUpdateUser();
+  const deleteUserMutation = useDeleteUser();
+
+  function EditEmailButton({ user, onSave }: { user: any; onSave: (email: string) => void }) {
+    const [open, setOpen] = useState(false);
+    const form = useForm<{ email: string }>({ defaultValues: { email: user.email }, resolver: zodResolver(z.object({ email: z.string().email() })) });
+
+    return (
+      <>
+        <Button size="sm" variant="ghost" onClick={() => { form.reset({ email: user.email }); setOpen(true); }}>
+          <Edit className="w-3 h-3 mr-2" />Edit
+        </Button>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit email for {user.email}</DialogTitle>
+            </DialogHeader>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit((data) => { onSave(data.email); setOpen(false); })} className="space-y-4">
+                <FormField control={form.control} name="email" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>New Email</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <Button type="submit" className="w-full">Save</Button>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+      </>
+    );
+  }
+
+  function DeleteUserButton({ user, onDelete }: { user: any; onDelete: () => void }) {
+    const [open, setOpen] = useState(false);
+    return (
+      <>
+        <Button size="sm" variant="ghost" onClick={() => setOpen(true)}>
+          <Trash className="w-3 h-3 text-red-500" />
+        </Button>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Delete user {user.email}?</DialogTitle>
+            </DialogHeader>
+            <div className="py-4">This will remove the account and associated parent links. This action cannot be undone.</div>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
+              <Button variant="destructive" onClick={() => { onDelete(); setOpen(false); }}>Delete</Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </>
+    );
+  }
 
   const adminForm = useForm<z.infer<typeof userSchema>>({
     resolver: zodResolver(userSchema),
@@ -64,7 +131,7 @@ export default function UserManagement() {
                   <Loader2 className="w-4 h-4 animate-spin mx-auto" />
                 </TableCell>
               </TableRow>
-            ) : users?.length === 0 ? (
+              ) : users?.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={3} className="text-center py-4 text-slate-500">
                   No {title.toLowerCase()}s found.
@@ -81,7 +148,12 @@ export default function UserManagement() {
                   </TableCell>
                   <TableCell className="font-mono text-xs text-slate-500">#{user.id}</TableCell>
                   <TableCell className="text-right text-xs text-slate-500">
-                    {new Date(user.createdAt).toLocaleDateString()}
+                    <div className="flex items-center justify-end gap-2">
+                      <span>{new Date(user.createdAt).toLocaleDateString()}</span>
+                      <EditEmailButton user={user} onSave={(email)=>{ updateUserMutation.mutate({ id: user.id, email }); }} />
+                      <DeleteUserButton user={user} onDelete={()=>{ deleteUserMutation.mutate({ id: user.id }); }} />
+                      <ChangePasswordButton user={user} onChange={(pwd)=>{ changePasswordMutation.mutate({ id: user.id, password: pwd }); }} />
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
@@ -91,6 +163,41 @@ export default function UserManagement() {
       </CardContent>
     </Card>
   );
+
+  function ChangePasswordButton({ user, onChange }: { user: any; onChange: (pwd: string) => void }) {
+    const [open, setOpen] = useState(false);
+    const pwdForm = useForm<{ password: string }>({
+      defaultValues: { password: "" },
+      resolver: zodResolver(z.object({ password: z.string().min(12, "Password must be at least 12 characters").regex(/[A-Z]/).regex(/[0-9]/).regex(/[^A-Za-z0-9]/) })),
+    });
+
+    return (
+      <>
+        <Button size="sm" variant="ghost" onClick={() => setOpen(true)}>Change Password</Button>
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Change password for {user.email}</DialogTitle>
+            </DialogHeader>
+            <Form {...pwdForm}>
+              <form onSubmit={pwdForm.handleSubmit((data)=>{ onChange(data.password); setOpen(false); pwdForm.reset(); })} className="space-y-4">
+                <FormField control={pwdForm.control} name="password" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>New Password</FormLabel>
+                    <FormControl>
+                      <PasswordInput {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+                <Button type="submit" className="w-full">Save</Button>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+      </>
+    );
+  }
 
   return (
     <AdminLayout>
@@ -138,7 +245,9 @@ export default function UserManagement() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Password</FormLabel>
-                          <FormControl><Input type="password" {...field} /></FormControl>
+                          <FormControl>
+                            <PasswordInput {...field} className="" />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -180,7 +289,9 @@ export default function UserManagement() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Password</FormLabel>
-                          <FormControl><Input type="password" {...field} /></FormControl>
+                          <FormControl>
+                            <PasswordInput {...field} className="" />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}

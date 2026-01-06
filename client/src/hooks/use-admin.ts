@@ -30,7 +30,16 @@ export function useCreateUser() {
         body: JSON.stringify(data),
         credentials: "include",
       });
-      if (!res.ok) throw new Error("Failed to create user");
+      if (!res.ok) {
+        const text = await res.text();
+        // try parse json
+        try {
+          const j = JSON.parse(text);
+          throw new Error(j?.message || text || "Failed to create user");
+        } catch {
+          throw new Error(text || "Failed to create user");
+        }
+      }
       return res.json();
     },
     onSuccess: () => {
@@ -73,6 +82,27 @@ export function useStudents() {
   });
 }
 
+export function useDeleteStudent() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async ({ id }: { id: number }) => {
+      const url = buildUrl(api.admin.deleteStudent.path, { id });
+      const res = await fetch(url, { method: api.admin.deleteStudent.method, credentials: "include" });
+      if (!res.ok) {
+        const text = await res.text();
+        try { const j = JSON.parse(text); throw new Error(j?.message || text); } catch { throw new Error(text || "Failed"); }
+      }
+      return api.admin.deleteStudent.responses[200].parse(await res.json());
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [api.admin.listStudents.path] });
+      toast({ title: "Student deleted" });
+    }
+  });
+}
+
 export function useCreateStudent() {
   const queryClient = useQueryClient();
   const { toast } = useToast();
@@ -92,6 +122,107 @@ export function useCreateStudent() {
       queryClient.invalidateQueries({ queryKey: [api.admin.listStudents.path] });
       toast({ title: "Student created successfully" });
     },
+  });
+}
+
+export function useUpdateStudent() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async ({ id, data }: { id: number; data: Partial<any> }) => {
+      const url = buildUrl(api.admin.updateStudent.path, { id });
+      const res = await fetch(url, {
+        method: api.admin.updateStudent.method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to update student");
+      return api.admin.updateStudent.responses[200].parse(await res.json());
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [api.admin.listStudents.path] });
+      toast({ title: "Student updated" });
+    },
+  });
+}
+
+export function useChangeUserPassword() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async ({ id, password }: { id: number; password: string }) => {
+      const url = buildUrl(api.admin.changeUserPassword.path, { id });
+      const res = await fetch(url, {
+        method: api.admin.changeUserPassword.method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+        credentials: "include",
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        try { const j = JSON.parse(text); throw new Error(j?.message || text); } catch { throw new Error(text || "Failed"); }
+      }
+      return api.admin.changeUserPassword.responses[200].parse(await res.json());
+    },
+    onSuccess: () => {
+      toast({ title: "Password updated" });
+    }
+  });
+}
+
+export function useUpdateUser() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async ({ id, email }: { id: number; email: string }) => {
+      const url = buildUrl(api.admin.updateUser.path, { id });
+      const res = await fetch(url, {
+        method: api.admin.updateUser.method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+        credentials: "include",
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        try { const j = JSON.parse(text); throw new Error(j?.message || text); } catch { throw new Error(text || "Failed"); }
+      }
+      return api.admin.updateUser.responses[200].parse(await res.json());
+    },
+    onSuccess: () => {
+      // invalidate both role lists to refresh UI
+      queryClient.invalidateQueries({ queryKey: [buildUrl(api.admin.listUsersByRole.path, { role: 'ADMIN' })] });
+      queryClient.invalidateQueries({ queryKey: [buildUrl(api.admin.listUsersByRole.path, { role: 'PARENT' })] });
+      toast({ title: "User updated" });
+    }
+  });
+}
+
+export function useDeleteUser() {
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  return useMutation({
+    mutationFn: async ({ id }: { id: number }) => {
+      const url = buildUrl(api.admin.deleteUser.path, { id });
+      const res = await fetch(url, {
+        method: api.admin.deleteUser.method,
+        credentials: "include",
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        try { const j = JSON.parse(text); throw new Error(j?.message || text); } catch { throw new Error(text || "Failed"); }
+      }
+      return api.admin.deleteUser.responses[200].parse(await res.json());
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [buildUrl(api.admin.listUsersByRole.path, { role: 'ADMIN' })] });
+      queryClient.invalidateQueries({ queryKey: [buildUrl(api.admin.listUsersByRole.path, { role: 'PARENT' })] });
+      toast({ title: "User deleted" });
+    }
   });
 }
 

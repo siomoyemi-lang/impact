@@ -120,6 +120,52 @@ export const api = {
         404: errorSchemas.notFound,
       },
     },
+    updateStudent: {
+      method: 'PATCH' as const,
+      path: '/api/admin/students/:id',
+      input: insertStudentSchema.partial(),
+      responses: {
+        200: z.custom<typeof students.$inferSelect>(),
+        400: errorSchemas.validation,
+        404: errorSchemas.notFound,
+      },
+    },
+    deleteStudent: {
+      method: 'DELETE' as const,
+      path: '/api/admin/students/:id',
+      responses: {
+        200: z.object({ message: z.string() }),
+        404: errorSchemas.notFound,
+      },
+    },
+    changeUserPassword: {
+      method: 'PATCH' as const,
+      path: '/api/admin/users/:id/password',
+      input: z.object({ password: z.string().min(12) }),
+      responses: {
+        200: z.object({ message: z.string() }),
+        400: errorSchemas.validation,
+        404: errorSchemas.notFound,
+      },
+    },
+    updateUser: {
+      method: 'PATCH' as const,
+      path: '/api/admin/users/:id',
+      input: z.object({ email: z.string().email() }).partial(),
+      responses: {
+        200: z.custom<typeof users.$inferSelect>(),
+        400: errorSchemas.validation,
+        404: errorSchemas.notFound,
+      },
+    },
+    deleteUser: {
+      method: 'DELETE' as const,
+      path: '/api/admin/users/:id',
+      responses: {
+        200: z.object({ message: z.string() }),
+        404: errorSchemas.notFound,
+      },
+    },
     linkParent: {
       method: 'POST' as const,
       path: '/api/admin/link-parent',

@@ -110,6 +110,54 @@ export async function registerRoutes(
     }
   });
 
+  // Change any user's password (admin only)
+  app.patch(api.admin.changeUserPassword.path, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const input = api.admin.changeUserPassword.input.parse(req.body);
+      const user = await storage.getUser(id);
+      if (!user) return res.status(404).json({ message: 'User not found' });
+      const hashed = await hashPassword(input.password);
+      await storage.updateUserPassword(id, hashed);
+      res.json({ message: 'Password updated' });
+    } catch (err) {
+      if (err instanceof z.ZodError) return res.status(400).json({ message: err.errors[0].message });
+      res.status(500).json({ message: (err as Error).message });
+    }
+  });
+
+  // Update user details (email)
+  app.patch(api.admin.updateUser.path, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const input = api.admin.updateUser.input.parse(req.body);
+      const user = await storage.getUser(id);
+      if (!user) return res.status(404).json({ message: 'User not found' });
+      if (input.email) {
+        const updated = await storage.updateUserEmail(id, input.email);
+        res.json(updated);
+      } else {
+        res.status(400).json({ message: 'No fields to update' });
+      }
+    } catch (err) {
+      if (err instanceof z.ZodError) return res.status(400).json({ message: err.errors[0].message });
+      res.status(500).json({ message: (err as Error).message });
+    }
+  });
+
+  // Delete user
+  app.delete(api.admin.deleteUser.path, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const user = await storage.getUser(id);
+      if (!user) return res.status(404).json({ message: 'User not found' });
+      await storage.deleteUser(id);
+      res.json({ message: 'User deleted' });
+    } catch (err) {
+      res.status(500).json({ message: (err as Error).message });
+    }
+  });
+
   // Students
   app.get(api.admin.listStudents.path, requireAdmin, async (req, res) => {
     const students = await storage.getAllStudents();
@@ -138,6 +186,43 @@ export async function registerRoutes(
       res.status(500).json({ message: (err as Error).message });
     }
   });
+
+  // Update student
+  app.patch(api.admin.updateStudent.path, requireAdmin, async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const input = api.admin.updateStudent.input.parse(req.body);
+      const { parentEmail, ...studentData } = input as any;
+      const exists = await storage.getStudent(id);
+      if (!exists) return res.status(404).json({ message: 'Student not found' });
+
+      const updated = await storage.updateStudent(id, studentData as any);
+
+      if (parentEmail) {
+        const parent = await storage.getParentByEmail(parentEmail);
+        if (!parent) return res.status(404).json({ message: `No parent found with email: ${parentEmail}.` });
+        await storage.linkParentToStudent(parent.id, id);
+      }
+
+      res.json(updated);
+    } catch (err) {
+      if (err instanceof z.ZodError) return res.status(400).json({ message: err.errors[0].message });
+      res.status(500).json({ message: (err as Error).message });
+    }
+  });
+
+    // Delete student
+    app.delete(api.admin.deleteStudent.path, requireAdmin, async (req, res) => {
+      try {
+        const id = parseInt(req.params.id);
+        const exists = await storage.getStudent(id);
+        if (!exists) return res.status(404).json({ message: 'Student not found' });
+        await storage.deleteStudent(id);
+        res.json({ message: 'Student deleted' });
+      } catch (err) {
+        res.status(500).json({ message: (err as Error).message });
+      }
+    });
 
   app.get(api.admin.listUsersByRole.path, requireAdmin, async (req, res) => {
     const role = req.params.role as "ADMIN" | "PARENT";
