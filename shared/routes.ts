@@ -103,6 +103,36 @@ export const api = {
         400: errorSchemas.validation,
       },
     },
+    createTeacher: {
+      method: 'POST' as const,
+      path: '/api/admin/users/teacher',
+      input: insertUserSchema.pick({ email: true, password: true }).extend({
+        password: z.string()
+          .min(12, "Password must be at least 12 characters")
+          .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+          .regex(/[0-9]/, "Password must contain at least one number")
+          .regex(/[^A-Za-z0-9]/, "Password must contain at least one symbol")
+      }),
+      responses: {
+        201: z.custom<typeof users.$inferSelect>(),
+        400: errorSchemas.validation,
+      },
+    },
+    createAccounting: {
+      method: 'POST' as const,
+      path: '/api/admin/users/accounting',
+      input: insertUserSchema.pick({ email: true, password: true }).extend({
+        password: z.string()
+          .min(12, "Password must be at least 12 characters")
+          .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+          .regex(/[0-9]/, "Password must contain at least one number")
+          .regex(/[^A-Za-z0-9]/, "Password must contain at least one symbol")
+      }),
+      responses: {
+        201: z.custom<typeof users.$inferSelect>(),
+        400: errorSchemas.validation,
+      },
+    },
     listStudents: {
       method: 'GET' as const,
       path: '/api/admin/students',

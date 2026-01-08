@@ -27,7 +27,7 @@ function ProtectedRoute({
   allowedRole 
 }: { 
   component: React.ComponentType<any>;
-  allowedRole?: 'ADMIN' | 'PARENT';
+  allowedRole?: 'ADMIN' | 'PARENT' | 'TEACHER' | 'ACCOUNTING';
 }) {
   const { user, isLoading } = useAuth();
 
@@ -44,8 +44,13 @@ function ProtectedRoute({
   }
 
   if (allowedRole && user.role !== allowedRole) {
-    // Redirect to correct dashboard if role doesn't match
-    return <Redirect to={user.role === 'ADMIN' ? '/admin/dashboard' : '/parent/dashboard'} />;
+    const rolePaths: Record<string, string> = {
+      'ADMIN': '/admin/dashboard',
+      'PARENT': '/parent/dashboard',
+      'TEACHER': '/teacher/dashboard',
+      'ACCOUNTING': '/accounting/dashboard'
+    };
+    return <Redirect to={rolePaths[user.role] || '/auth'} />;
   }
 
   return <Component />;

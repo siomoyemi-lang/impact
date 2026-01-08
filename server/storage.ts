@@ -1,6 +1,6 @@
 import { db } from "./db";
 import { 
-  users, parents, students, parentStudents, bills, receipts, results,
+  users, parents, teachers, accounting, students, parentStudents, bills, receipts, results,
   type User, type InsertUser, type Student, type InsertStudent, 
   type Bill, type InsertBill, type Receipt, type InsertReceipt, 
   type Result, type InsertResult, type Parent
@@ -11,12 +11,14 @@ export interface IStorage {
   // User & Auth
   getUser(id: number): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
-  createUser(user: InsertUser & { role: "ADMIN" | "PARENT" }): Promise<User>;
+  createUser(user: InsertUser & { role: "ADMIN" | "PARENT" | "TEACHER" | "ACCOUNTING" }): Promise<User>;
   
-  // Parent & Students
+  // Roles
   createParent(userId: number): Promise<Parent>;
+  createTeacher(userId: number): Promise<any>;
+  createAccounting(userId: number): Promise<any>;
   getParentByUserId(userId: number): Promise<Parent | undefined>;
-  getParentByEmail(email: string): Promise<Parent | undefined>; // Helper to find parent by user email
+  getParentByEmail(email: string): Promise<Parent | undefined>; 
   createStudent(student: InsertStudent): Promise<Student>;
   getAllStudents(): Promise<Student[]>;
   getStudent(id: number): Promise<Student | undefined>;
@@ -26,20 +28,20 @@ export interface IStorage {
   // Bills
   createBill(bill: InsertBill): Promise<Bill>;
   getBillsByStudentId(studentId: number): Promise<Bill[]>;
-  getAllBills(): Promise<(Bill & { student: Student })[]>; // Admin view
+  getAllBills(): Promise<(Bill & { student: Student })[]>; 
   getBill(id: number): Promise<Bill | undefined>;
   
   // Receipts
   createReceipt(receipt: InsertReceipt): Promise<Receipt>;
   getReceiptsByBillId(billId: number): Promise<Receipt[]>;
-  getAllReceipts(): Promise<(Receipt & { bill: Bill, uploadedBy: Parent })[]>; // Admin view
+  getAllReceipts(): Promise<(Receipt & { bill: Bill, uploadedBy: Parent })[]>; 
   updateReceiptStatus(id: number, status: "APPROVED" | "REJECTED"): Promise<Receipt>;
   getReceipt(id: number): Promise<Receipt | undefined>;
   
   // Results
   createResult(result: InsertResult): Promise<Result>;
   getResultsByStudentId(studentId: number): Promise<Result[]>;
-  getUsersByRole(role: "ADMIN" | "PARENT"): Promise<User[]>;
+  getUsersByRole(role: "ADMIN" | "PARENT" | "TEACHER" | "ACCOUNTING"): Promise<User[]>;
   
   // Session Store
   sessionStore: any;
@@ -59,11 +61,11 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async getUsersByRole(role: "ADMIN" | "PARENT"): Promise<User[]> {
+  async getUsersByRole(role: "ADMIN" | "PARENT" | "TEACHER" | "ACCOUNTING"): Promise<User[]> {
     return await db.select().from(users).where(eq(users.role, role)).orderBy(desc(users.createdAt));
   }
 
-  async createUser(user: InsertUser & { role: "ADMIN" | "PARENT" }): Promise<User> {
+  async createUser(user: InsertUser & { role: "ADMIN" | "PARENT" | "TEACHER" | "ACCOUNTING" }): Promise<User> {
     const [newUser] = await db.insert(users).values(user).returning();
     return newUser;
   }
@@ -98,6 +100,16 @@ export class DatabaseStorage implements IStorage {
   async createParent(userId: number): Promise<Parent> {
     const [parent] = await db.insert(parents).values({ userId }).returning();
     return parent;
+  }
+
+  async createTeacher(userId: number): Promise<any> {
+    const [teacher] = await db.insert(teachers).values({ userId }).returning();
+    return teacher;
+  }
+
+  async createAccounting(userId: number): Promise<any> {
+    const [acc] = await db.insert(accounting).values({ userId }).returning();
+    return acc;
   }
 
   async getParentByUserId(userId: number): Promise<Parent | undefined> {

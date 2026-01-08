@@ -74,6 +74,20 @@ export async function registerRoutes(
     next();
   };
 
+  const requireTeacher = (req: Request, res: any, next: any) => {
+    if (!req.isAuthenticated() || (req.user as any).role !== "TEACHER") {
+      return res.status(403).json({ message: "Forbidden: Teachers only" });
+    }
+    next();
+  };
+
+  const requireAccounting = (req: Request, res: any, next: any) => {
+    if (!req.isAuthenticated() || (req.user as any).role !== "ACCOUNTING") {
+      return res.status(403).json({ message: "Forbidden: Accounting only" });
+    }
+    next();
+  };
+
   const requireParent = (req: Request, res: any, next: any) => {
     if (!req.isAuthenticated() || (req.user as any).role !== "PARENT") {
       return res.status(403).json({ message: "Forbidden: Parents only" });
@@ -103,6 +117,34 @@ export async function registerRoutes(
       const hashedPassword = await hashPassword(input.password);
       const user = await storage.createUser({ ...input, password: hashedPassword, role: "PARENT" });
       await storage.createParent(user.id);
+      res.status(201).json(user);
+    } catch (err) {
+      if (err instanceof z.ZodError) return res.status(400).json({ message: err.errors[0].message });
+      res.status(500).json({ message: (err as Error).message });
+    }
+  });
+
+  // Create teacher
+  app.post("/api/admin/users/teacher", requireAdmin, async (req, res) => {
+    try {
+      const input = api.admin.createAdmin.input.parse(req.body); // reuse same schema
+      const hashedPassword = await hashPassword(input.password);
+      const user = await storage.createUser({ ...input, password: hashedPassword, role: "TEACHER" });
+      await storage.createTeacher(user.id);
+      res.status(201).json(user);
+    } catch (err) {
+      if (err instanceof z.ZodError) return res.status(400).json({ message: err.errors[0].message });
+      res.status(500).json({ message: (err as Error).message });
+    }
+  });
+
+  // Create accounting
+  app.post("/api/admin/users/accounting", requireAdmin, async (req, res) => {
+    try {
+      const input = api.admin.createAdmin.input.parse(req.body); // reuse same schema
+      const hashedPassword = await hashPassword(input.password);
+      const user = await storage.createUser({ ...input, password: hashedPassword, role: "ACCOUNTING" });
+      await storage.createAccounting(user.id);
       res.status(201).json(user);
     } catch (err) {
       if (err instanceof z.ZodError) return res.status(400).json({ message: err.errors[0].message });
@@ -225,8 +267,8 @@ export async function registerRoutes(
     });
 
   app.get(api.admin.listUsersByRole.path, requireAdmin, async (req, res) => {
-    const role = req.params.role as "ADMIN" | "PARENT";
-    if (role !== "ADMIN" && role !== "PARENT") return res.status(400).json({ message: "Invalid role" });
+    const role = req.params.role as "ADMIN" | "PARENT" | "TEACHER" | "ACCOUNTING";
+    if (role !== "ADMIN" && role !== "PARENT" && role !== "TEACHER" && role !== "ACCOUNTING") return res.status(400).json({ message: "Invalid role" });
     const users = await storage.getUsersByRole(role);
     res.json(users);
   });

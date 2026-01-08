@@ -4,7 +4,7 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 // --- Enums ---
-export const userRoles = ["ADMIN", "PARENT"] as const;
+export const userRoles = ["ADMIN", "PARENT", "TEACHER", "ACCOUNTING"] as const;
 export const billStatus = ["PENDING", "PAID"] as const;
 export const receiptStatus = ["PENDING", "APPROVED", "REJECTED"] as const;
 
@@ -19,6 +19,18 @@ export const users = pgTable("users", {
 });
 
 export const parents = pgTable("parents", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const teachers = pgTable("teachers", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const accounting = pgTable("accounting", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull().references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
@@ -83,6 +95,20 @@ export const parentsRelations = relations(parents, ({ one, many }) => ({
   }),
   parentStudents: many(parentStudents),
   uploadedReceipts: many(receipts),
+}));
+
+export const teachersRelations = relations(teachers, ({ one }) => ({
+  user: one(users, {
+    fields: [teachers.userId],
+    references: [users.id],
+  }),
+}));
+
+export const accountingRelations = relations(accounting, ({ one }) => ({
+  user: one(users, {
+    fields: [accounting.userId],
+    references: [users.id],
+  }),
 }));
 
 export const studentsRelations = relations(students, ({ many }) => ({
