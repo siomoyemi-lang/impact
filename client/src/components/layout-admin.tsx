@@ -17,19 +17,35 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { GlobalSearch } from "./global-search";
 
-export function AdminLayout({ children }: { children: React.ReactNode }) {
+export function RoleLayout({ children, role }: { children: React.ReactNode, role: 'ADMIN' | 'TEACHER' | 'ACCOUNTING' }) {
   const { logoutMutation, user } = useAuth();
   const [location] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const navigation = [
-    { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
-    { name: 'Student Directory', href: '/admin/students', icon: Users },
-    { name: 'Billing Overview', href: '/admin/billing', icon: CreditCard },
-    { name: 'Receipt Approvals', href: '/admin/receipts', icon: FileCheck },
-    { name: 'Result Uploads', href: '/admin/results', icon: FileText },
-    { name: 'User Management', href: '/admin/users', icon: Settings },
-  ];
+  const navigationMap = {
+    ADMIN: [
+      { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+      { name: 'Student Directory', href: '/admin/students', icon: Users },
+      { name: 'Billing Overview', href: '/admin/billing', icon: CreditCard },
+      { name: 'Receipt Approvals', href: '/admin/receipts', icon: FileCheck },
+      { name: 'Result Uploads', href: '/admin/results', icon: FileText },
+      { name: 'User Management', href: '/admin/users', icon: Settings },
+    ],
+    TEACHER: [
+      { name: 'Dashboard', href: '/teacher/dashboard', icon: LayoutDashboard },
+      { name: 'Manage Students', href: '/teacher/students', icon: Users },
+      { name: 'Send Bills', href: '/teacher/billing', icon: CreditCard },
+      { name: 'Upload Results', href: '/teacher/results', icon: FileText },
+    ],
+    ACCOUNTING: [
+      { name: 'Dashboard', href: '/accounting/dashboard', icon: LayoutDashboard },
+      { name: 'Billing Overview', href: '/accounting/billing', icon: CreditCard },
+      { name: 'Receipt Approvals', href: '/accounting/receipts', icon: FileCheck },
+    ]
+  };
+
+  const navigation = navigationMap[role] || [];
+  const roleLabel = role.charAt(0) + role.slice(1).toLowerCase();
 
   const handleLogout = () => {
     logoutMutation.mutate();
@@ -67,7 +83,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
 
         <div className="flex-1 overflow-y-auto py-6 px-4 space-y-1">
           <div className="px-3 mb-4 text-[11px] font-bold text-slate-500 uppercase tracking-[0.1em]">
-            Administration
+            {roleLabel} Panel
           </div>
           {navigation.map((item) => {
             const isActive = location === item.href;
@@ -90,11 +106,11 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
         <div className="p-4 border-t border-slate-800 bg-slate-950/30">
           <div className="flex items-center gap-3 mb-4 px-2">
             <div className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-white shadow-inner">
-              {user?.email?.charAt(0).toUpperCase() || 'A'}
+              {user?.email?.charAt(0).toUpperCase() || 'U'}
             </div>
             <div className="overflow-hidden">
               <p className="text-sm font-semibold text-white truncate">{user?.email}</p>
-              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Administrator</p>
+              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">{roleLabel}</p>
             </div>
           </div>
           <Button 
@@ -124,7 +140,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Header actions could go here */}
+            {/* Header actions */}
           </div>
         </header>
 
@@ -136,4 +152,8 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
       </div>
     </div>
   );
+}
+
+export function AdminLayout({ children }: { children: React.ReactNode }) {
+  return <RoleLayout role="ADMIN">{children}</RoleLayout>;
 }

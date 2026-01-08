@@ -15,6 +15,17 @@ import ReceiptApprovals from "@/pages/admin/receipts";
 import ResultUploads from "@/pages/admin/results";
 import UserManagement from "@/pages/admin/users";
 
+// Teacher Pages
+import TeacherDashboard from "@/pages/teacher/dashboard";
+import TeacherStudents from "@/pages/teacher/students";
+import TeacherBilling from "@/pages/teacher/billing";
+import TeacherResults from "@/pages/teacher/results";
+
+// Accounting Pages
+import AccountingDashboard from "@/pages/accounting/dashboard";
+import AccountingBilling from "@/pages/accounting/billing";
+import AccountingReceipts from "@/pages/accounting/receipts";
+
 // Parent Pages
 import ParentDashboard from "@/pages/parent/dashboard";
 import ParentBilling from "@/pages/parent/billing";
@@ -94,6 +105,31 @@ function Router() {
       </Route>
       <Route path="/parent/results">
         <ProtectedRoute component={ParentResults} allowedRole="PARENT" />
+      </Route>
+
+      {/* Teacher Routes */}
+      <Route path="/teacher/dashboard">
+        <ProtectedRoute component={TeacherDashboard} allowedRole="TEACHER" />
+      </Route>
+      <Route path="/teacher/students">
+        <ProtectedRoute component={TeacherStudents} allowedRole="TEACHER" />
+      </Route>
+      <Route path="/teacher/billing">
+        <ProtectedRoute component={TeacherBilling} allowedRole="TEACHER" />
+      </Route>
+      <Route path="/teacher/results">
+        <ProtectedRoute component={TeacherResults} allowedRole="TEACHER" />
+      </Route>
+
+      {/* Accounting Routes */}
+      <Route path="/accounting/dashboard">
+        <ProtectedRoute component={AccountingDashboard} allowedRole="ACCOUNTING" />
+      </Route>
+      <Route path="/accounting/billing">
+        <ProtectedRoute component={AccountingBilling} allowedRole="ACCOUNTING" />
+      </Route>
+      <Route path="/accounting/receipts">
+        <ProtectedRoute component={AccountingReceipts} allowedRole="ACCOUNTING" />
       </Route>
 
       {/* Fallback */}

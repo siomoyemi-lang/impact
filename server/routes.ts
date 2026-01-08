@@ -422,8 +422,27 @@ export async function registerRoutes(
 
   // --- Seed Data ---
   await seedAdmin();
+  await seedDemoRoles();
 
   return httpServer;
+}
+
+async function seedDemoRoles() {
+  const roles = [
+    { email: "teacher@impacthouse.com", role: "TEACHER" as const },
+    { email: "accounting@impacthouse.com", role: "ACCOUNTING" as const }
+  ];
+  const password = await hashPassword("kjbhjashjc@@WW222");
+
+  for (const r of roles) {
+    const existing = await storage.getUserByEmail(r.email);
+    if (!existing) {
+      const user = await storage.createUser({ email: r.email, password, role: r.role });
+      if (r.role === "TEACHER") await storage.createTeacher(user.id);
+      if (r.role === "ACCOUNTING") await storage.createAccounting(user.id);
+      console.log(`Seeded ${r.role} account: ${r.email}`);
+    }
+  }
 }
 
 async function seedAdmin() {
