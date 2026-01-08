@@ -136,7 +136,7 @@ export default function AdminBilling() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Description</FormLabel>
-                        <FormControl><Input placeholder="Tuition fees..." {...field} /></FormControl>
+                        <FormControl><Input placeholder="Tuition fees..." {...field} value={field.value ?? ""} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
