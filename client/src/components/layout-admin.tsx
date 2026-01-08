@@ -9,11 +9,13 @@ import {
   Settings, 
   LogOut,
   Menu,
-  X
+  X,
+  Search
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { GlobalSearch } from "./global-search";
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {
   const { logoutMutation, user } = useAuth();
@@ -116,7 +118,11 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
             <Menu className="w-6 h-6" />
           </button>
           
-          <div className="flex items-center gap-4 ml-auto">
+          <div className="flex-1 flex justify-center px-4">
+            <GlobalSearch />
+          </div>
+
+          <div className="flex items-center gap-4">
             {/* Header actions could go here */}
           </div>
         </header>
