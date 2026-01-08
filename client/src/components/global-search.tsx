@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Search, User, GraduationCap, FileText, Command as CommandIcon } from "lucide-react";
+import { Search, User, GraduationCap, FileText, Receipt, PlusCircle } from "lucide-react";
 import { useLocation } from "wouter";
 import {
   CommandDialog,
@@ -12,6 +12,7 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 export function GlobalSearch() {
   const [open, setOpen] = React.useState(false);
@@ -80,21 +81,42 @@ export function GlobalSearch() {
                 const names = student.fullName.split(' ');
                 const initials = names.map((n: string) => n[0]).join('').toUpperCase();
                 return (
-                  <CommandItem
-                    key={student.id}
-                    onSelect={() => onSelect(`/admin/students?id=${student.id}`)}
-                    className="flex items-center justify-between"
-                  >
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs">
-                        {initials}
+                  <div key={student.id} className="px-2">
+                    <CommandItem
+                      onSelect={() => onSelect(`/admin/students?id=${student.id}`)}
+                      className="flex items-center justify-between"
+                    >
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs">
+                          {initials}
+                        </div>
+                        <div>
+                          <div className="font-medium">{student.fullName}</div>
+                          <div className="text-xs text-slate-500">Grade: {student.className} • ID: {student.admissionNumber}</div>
+                        </div>
                       </div>
-                      <div>
-                        <div className="font-medium">{student.fullName}</div>
-                        <div className="text-xs text-slate-500">Grade: {student.className} • ID: {student.admissionNumber}</div>
+                      <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 px-2 text-[10px]"
+                          onClick={() => onSelect(`/admin/billing?studentId=${student.id}&action=create`)}
+                        >
+                          <PlusCircle className="w-3 h-3 mr-1" />
+                          Bill
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 px-2 text-[10px]"
+                          onClick={() => onSelect(`/admin/receipts?studentId=${student.id}`)}
+                        >
+                          <Receipt className="w-3 h-3 mr-1" />
+                          Receipts
+                        </Button>
                       </div>
-                    </div>
-                  </CommandItem>
+                    </CommandItem>
+                  </div>
                 );
               })}
             </CommandGroup>
