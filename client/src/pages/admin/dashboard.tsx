@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useStudents, useAllBills, useAllReceipts } from "@/hooks/use-admin";
 import { Users, CreditCard, FileCheck, ArrowUpRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/status-badge";
 import { Link } from "wouter";
 
