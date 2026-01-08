@@ -12,13 +12,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertBillSchema } from "@shared/schema";
 import { z } from "zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 
 export default function AdminBilling() {
   const { data: bills, isLoading: billsLoading } = useAllBills();
   const { data: students } = useStudents();
   const createBillMutation = useCreateBill();
   const [createOpen, setCreateOpen] = useState(false);
+  const [location] = useLocation();
 
   // Zod coerces form strings to numbers for studentId and amount
   const formSchema = insertBillSchema.extend({
@@ -36,6 +38,17 @@ export default function AdminBilling() {
       status: "PENDING"
     },
   });
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const studentId = params.get('studentId');
+    const action = params.get('action');
+
+    if (action === 'create' && studentId) {
+      setCreateOpen(true);
+      form.setValue('studentId', parseInt(studentId));
+    }
+  }, [location, form]);
 
   function onSubmit(data: z.infer<typeof formSchema>) {
     createBillMutation.mutate(data, {
