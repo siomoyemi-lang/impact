@@ -152,6 +152,42 @@ export async function registerRoutes(
     }
   });
 
+  // --- Teacher Routes ---
+  app.post("/api/teacher/students", requireTeacher, async (req, res) => {
+    try {
+      const input = api.admin.createStudent.input.parse(req.body);
+      const student = await storage.createStudent(input);
+      res.status(201).json(student);
+    } catch (err) {
+      if (err instanceof z.ZodError) return res.status(400).json({ message: err.errors[0].message });
+      res.status(500).json({ message: (err as Error).message });
+    }
+  });
+
+  app.post("/api/teacher/bills", requireTeacher, async (req, res) => {
+    try {
+      const input = api.admin.createBill.input.parse(req.body);
+      const bill = await storage.createBill(input);
+      res.status(201).json(bill);
+    } catch (err) {
+      if (err instanceof z.ZodError) return res.status(400).json({ message: err.errors[0].message });
+      res.status(500).json({ message: (err as Error).message });
+    }
+  });
+
+  // --- Accounting Routes ---
+  app.patch("/api/accounting/receipts/:id", requireAccounting, async (req, res) => {
+    try {
+      const { status } = api.admin.updateReceiptStatus.input.parse(req.body);
+      const id = parseInt(req.params.id);
+      const receipt = await storage.updateReceiptStatus(id, status);
+      res.json(receipt);
+    } catch (err) {
+       if (err instanceof z.ZodError) return res.status(400).json({ message: err.errors[0].message });
+       res.status(500).json({ message: (err as Error).message });
+    }
+  });
+
   // Change any user's password (admin only)
   app.patch(api.admin.changeUserPassword.path, requireAdmin, async (req, res) => {
     try {
