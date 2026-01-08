@@ -66,37 +66,37 @@ export default function AdminBilling() {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-2">
           <div>
-            <h1 className="text-3xl font-display font-bold text-slate-900">Billing Overview</h1>
-            <p className="text-slate-500">Create and manage student bills</p>
+            <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">Billing Overview</h1>
+            <p className="text-slate-500 text-sm mt-1">Create and manage student bills</p>
           </div>
           
           <Dialog open={createOpen} onOpenChange={setCreateOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/20">
+              <Button className="bg-slate-900 hover:bg-slate-800 text-white shadow-lg shadow-slate-200 h-11 px-6">
                 <Plus className="w-4 h-4 mr-2" />
                 Create Bill
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="sm:max-w-[500px]">
               <DialogHeader>
-                <DialogTitle>Generate New Bill</DialogTitle>
+                <DialogTitle className="text-xl">Generate New Bill</DialogTitle>
               </DialogHeader>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5 pt-4">
                   <FormField
                     control={form.control}
                     name="studentId"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Student</FormLabel>
+                        <FormLabel className="text-xs font-bold uppercase tracking-wider text-slate-500">Student</FormLabel>
                         <Select 
                           onValueChange={field.onChange} 
                           defaultValue={field.value ? String(field.value) : undefined}
                         >
                           <FormControl>
-                            <SelectTrigger>
+                            <SelectTrigger className="h-11">
                               <SelectValue placeholder="Select a student" />
                             </SelectTrigger>
                           </FormControl>
@@ -112,40 +112,42 @@ export default function AdminBilling() {
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    control={form.control}
-                    name="amount"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Amount ($)</FormLabel>
-                        <FormControl><Input type="number" {...field} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="term"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Term</FormLabel>
-                        <FormControl><Input placeholder="Fall 2024" {...field} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="amount"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs font-bold uppercase tracking-wider text-slate-500">Amount ($)</FormLabel>
+                          <FormControl><Input type="number" className="h-11" {...field} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="term"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs font-bold uppercase tracking-wider text-slate-500">Term</FormLabel>
+                          <FormControl><Input placeholder="Fall 2024" className="h-11" {...field} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                   <FormField
                     control={form.control}
                     name="description"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Description</FormLabel>
-                        <FormControl><Input placeholder="Tuition fees..." {...field} value={field.value ?? ""} /></FormControl>
+                        <FormLabel className="text-xs font-bold uppercase tracking-wider text-slate-500">Description</FormLabel>
+                        <FormControl><Input placeholder="Tuition fees..." className="h-11" {...field} value={field.value ?? ""} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="w-full" disabled={createBillMutation.isPending}>
+                  <Button type="submit" className="w-full h-11 bg-blue-600 hover:bg-blue-700 mt-2" disabled={createBillMutation.isPending}>
                     {createBillMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Generate Bill
                   </Button>
@@ -155,36 +157,42 @@ export default function AdminBilling() {
           </Dialog>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200/60 overflow-hidden">
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>Bill ID</TableHead>
-                <TableHead>Student</TableHead>
-                <TableHead>Term</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Status</TableHead>
+              <TableRow className="bg-slate-50/50 hover:bg-slate-50/50">
+                <TableHead className="font-bold text-slate-500 text-[11px] uppercase tracking-wider py-4 px-6">Bill ID</TableHead>
+                <TableHead className="font-bold text-slate-500 text-[11px] uppercase tracking-wider py-4">Student</TableHead>
+                <TableHead className="font-bold text-slate-500 text-[11px] uppercase tracking-wider py-4">Term</TableHead>
+                <TableHead className="font-bold text-slate-500 text-[11px] uppercase tracking-wider py-4">Description</TableHead>
+                <TableHead className="font-bold text-slate-500 text-[11px] uppercase tracking-wider py-4">Amount</TableHead>
+                <TableHead className="font-bold text-slate-500 text-[11px] uppercase tracking-wider py-4 px-6">Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {billsLoading ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-slate-500">Loading bills...</TableCell>
+                  <TableCell colSpan={6} className="text-center py-12 text-slate-400">
+                    <Loader2 className="w-8 h-8 animate-spin mx-auto mb-2 opacity-20" />
+                    Loading bills...
+                  </TableCell>
                 </TableRow>
               ) : bills?.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="text-center py-8 text-slate-500">No bills found.</TableCell>
+                  <TableCell colSpan={6} className="text-center py-12 text-slate-500">
+                    <div className="mb-2 text-lg font-medium text-slate-300">No bills found</div>
+                    <p className="text-sm text-slate-400">Bills you create will appear here.</p>
+                  </TableCell>
                 </TableRow>
               ) : (
                 bills?.map((bill) => (
-                  <TableRow key={bill.id}>
-                    <TableCell className="font-mono">#{bill.id}</TableCell>
-                    <TableCell className="font-medium text-slate-900">{bill.student.fullName}</TableCell>
-                    <TableCell>{bill.term}</TableCell>
-                    <TableCell>{bill.description}</TableCell>
-                    <TableCell className="font-bold font-mono">${Number(bill.amount).toLocaleString()}</TableCell>
-                    <TableCell>
+                  <TableRow key={bill.id} className="hover:bg-slate-50/30 transition-colors">
+                    <TableCell className="font-mono text-sm text-slate-500 px-6">#{bill.id}</TableCell>
+                    <TableCell className="font-semibold text-slate-900">{bill.student.fullName}</TableCell>
+                    <TableCell className="text-slate-600 font-medium">{bill.term}</TableCell>
+                    <TableCell className="text-slate-500 text-sm">{bill.description}</TableCell>
+                    <TableCell className="font-bold font-mono text-slate-900">${Number(bill.amount).toLocaleString()}</TableCell>
+                    <TableCell className="px-6">
                       <StatusBadge status={bill.status} />
                     </TableCell>
                   </TableRow>

@@ -124,70 +124,74 @@ export default function StudentDirectory() {
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-2">
           <div>
-            <h1 className="text-3xl font-display font-bold text-slate-900">Student Directory</h1>
-            <p className="text-slate-500">Manage student records and parent linkages</p>
+            <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">Student Directory</h1>
+            <p className="text-slate-500 text-sm mt-1">Manage student records and parent linkages</p>
           </div>
           
           <Dialog open={createOpen} onOpenChange={setCreateOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg shadow-blue-600/20">
+              <Button className="bg-slate-900 hover:bg-slate-800 text-white shadow-lg shadow-slate-200 h-11 px-6">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Student
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="sm:max-w-[500px]">
               <DialogHeader>
-                <DialogTitle>Add New Student</DialogTitle>
+                <DialogTitle className="text-xl">Add New Student</DialogTitle>
               </DialogHeader>
               <Form {...createForm}>
-                <form onSubmit={createForm.handleSubmit(onCreateSubmit)} className="space-y-4">
-                  <FormField
-                    control={createForm.control}
-                    name="fullName"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Full Name</FormLabel>
-                        <FormControl><Input {...field} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={createForm.control}
-                    name="admissionNumber"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Admission Number</FormLabel>
-                        <FormControl><Input {...field} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={createForm.control}
-                    name="className"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Class</FormLabel>
-                        <FormControl><Input {...field} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={createForm.control}
-                    name="parentEmail"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Parent Email (Optional)</FormLabel>
-                        <FormControl><Input placeholder="parent@example.com" {...field} /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <Button type="submit" className="w-full" disabled={createStudentMutation.isPending}>
+                <form onSubmit={createForm.handleSubmit(onCreateSubmit)} className="space-y-5 pt-4">
+                  <div className="grid grid-cols-1 gap-5">
+                    <FormField
+                      control={createForm.control}
+                      name="fullName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs font-bold uppercase tracking-wider text-slate-500">Full Name</FormLabel>
+                          <FormControl><Input placeholder="John Doe" className="h-11" {...field} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={createForm.control}
+                        name="admissionNumber"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-xs font-bold uppercase tracking-wider text-slate-500">Admission Number</FormLabel>
+                            <FormControl><Input placeholder="ADM-001" className="h-11" {...field} /></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={createForm.control}
+                        name="className"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-xs font-bold uppercase tracking-wider text-slate-500">Class</FormLabel>
+                            <FormControl><Input placeholder="JSS 1" className="h-11" {...field} /></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <FormField
+                      control={createForm.control}
+                      name="parentEmail"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel className="text-xs font-bold uppercase tracking-wider text-slate-500">Parent Email (Optional)</FormLabel>
+                          <FormControl><Input placeholder="parent@example.com" className="h-11" {...field} /></FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  <Button type="submit" className="w-full h-11 bg-blue-600 hover:bg-blue-700 mt-2" disabled={createStudentMutation.isPending}>
                     {createStudentMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Create Record
                   </Button>
@@ -197,48 +201,64 @@ export default function StudentDirectory() {
           </Dialog>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200/60 overflow-hidden">
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>Admission No</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Parent</TableHead>
-                <TableHead>Class</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+              <TableRow className="bg-slate-50/50 hover:bg-slate-50/50">
+                <TableHead className="w-[150px] font-bold text-slate-500 text-[11px] uppercase tracking-wider py-4 px-6">Admission No</TableHead>
+                <TableHead className="font-bold text-slate-500 text-[11px] uppercase tracking-wider py-4">Name</TableHead>
+                <TableHead className="font-bold text-slate-500 text-[11px] uppercase tracking-wider py-4">Parent</TableHead>
+                <TableHead className="font-bold text-slate-500 text-[11px] uppercase tracking-wider py-4">Class</TableHead>
+                <TableHead className="text-right font-bold text-slate-500 text-[11px] uppercase tracking-wider py-4 px-6">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8 text-slate-500">Loading students...</TableCell>
+                  <TableCell colSpan={5} className="text-center py-12 text-slate-400">
+                    <Loader2 className="w-8 h-8 animate-spin mx-auto mb-2 opacity-20" />
+                    Loading students...
+                  </TableCell>
                 </TableRow>
               ) : students?.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8 text-slate-500">No students found.</TableCell>
+                  <TableCell colSpan={5} className="text-center py-12 text-slate-500">
+                    <div className="mb-2 text-lg font-medium text-slate-300">No records found</div>
+                    <p className="text-sm text-slate-400">Add your first student to get started.</p>
+                  </TableCell>
                 </TableRow>
               ) : (
                 students?.map((student: any) => (
-                  <TableRow key={student.id}>
-                    <TableCell className="font-mono">{student.admissionNumber}</TableCell>
-                    <TableCell className="font-medium text-slate-900">{student.fullName}</TableCell>
+                  <TableRow key={student.id} className="hover:bg-slate-50/30 transition-colors group">
+                    <TableCell className="font-mono text-sm text-slate-500 px-6">{student.admissionNumber}</TableCell>
+                    <TableCell className="font-semibold text-slate-900">{student.fullName}</TableCell>
                     <TableCell>
                       {student.parentEmail ? (
-                        <span className="text-sm text-blue-600 bg-blue-50 px-2 py-1 rounded-md">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">
                           {student.parentEmail}
                         </span>
                       ) : (
-                        <span className="text-sm text-slate-400 italic">Unlinked</span>
+                        <span className="text-xs text-slate-400 italic">No parent linked</span>
                       )}
                     </TableCell>
-                    <TableCell>{student.className}</TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button variant="outline" size="sm" onClick={() => openLinkModal(student.id)}>
-                          <UserPlus className="w-4 h-4 mr-2" />
-                          Link Parent
+                    <TableCell className="text-slate-600 font-medium">{student.className}</TableCell>
+                    <TableCell className="text-right px-6">
+                      <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="h-8 border-slate-200 text-slate-600 hover:bg-slate-50"
+                          onClick={() => openLinkModal(student.id)}
+                        >
+                          <UserPlus className="w-3.5 h-3.5 mr-1.5" />
+                          Link
                         </Button>
-                        <Button variant="ghost" size="sm" onClick={() => openEditModal(student)}>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="h-8 text-slate-600 hover:bg-slate-50"
+                          onClick={() => openEditModal(student)}
+                        >
                           Edit
                         </Button>
                         <DeleteStudentButton student={student} />

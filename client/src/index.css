@@ -5,17 +5,17 @@
 @tailwind utilities;
 
 :root {
-  --font-display: 'Outfit', sans-serif;
-  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-display: 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
 
-  /* Professional Blue & Teal Palette - Trustworthy & Clean */
+  /* Professional Navy & Royal Blue Palette */
   --background: 210 20% 98%;
   --foreground: 222 47% 11%;
 
-  --primary: 221 83% 53%;
+  --primary: 222 47% 11%; /* Deep Navy */
   --primary-foreground: 210 40% 98%;
 
-  --secondary: 199 89% 48%; /* Teal accent */
+  --secondary: 221 83% 53%; /* Royal Blue */
   --secondary-foreground: 0 0% 100%;
 
   --muted: 210 40% 96%;
@@ -31,7 +31,7 @@
   --input: 214 32% 91%;
   --ring: 221 83% 53%;
 
-  --radius: 0.75rem;
+  --radius: 0.5rem;
 
   --sidebar-background: 222 47% 11%;
   --sidebar-foreground: 210 40% 98%;
@@ -50,8 +50,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-display);
-    @apply font-bold tracking-tight text-slate-900;
+    @apply font-semibold tracking-tight text-slate-900;
   }
 }
 
