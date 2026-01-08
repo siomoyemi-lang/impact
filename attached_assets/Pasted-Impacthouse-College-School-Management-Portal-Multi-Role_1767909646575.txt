@@ -1,0 +1,196 @@
+Impacthouse College School Management Portal – Multi-Role Edition
+
+Build a secure, full-stack school management portal called Impacthouse College with four distinct user roles: Admin, Teacher, Parent, and Accounting. Each role has a dedicated dashboard/page with functionality strictly scoped to their responsibilities.
+
+1. Tech Stack
+
+Frontend: React + Vite, Tailwind CSS, shadcn/ui
+
+Backend: Node.js + Express, Passport.js Local Strategy
+
+Database: PostgreSQL with Drizzle ORM
+
+File uploads: Multer, configurable upload directory
+
+Session storage: PostgreSQL-backed sessions
+
+Environment-agnostic: Runs on Replit, VS Code, VPS, or any server
+
+2. User Roles & Access
+Role	Functionality
+Admin	Full system access: create parents, admins, teachers, students; link students and parents; upload results; generate bills; approve/reject receipts; view all dashboards.
+Teacher	Can create parents & students; link parents to students; generate bills for their students; cannot approve receipts.
+Accounting	Can view all receipts and bills; generate bills if needed; only accounting can approve/reject receipts; cannot manage students or create users.
+Parent	View linked wards; view/download bills; upload payment receipts; view/download academic results; cannot approve anything or create users.
+3. Authentication & Authorization
+
+Single login page for all roles.
+
+Email + password authentication.
+
+Server returns role → frontend redirects:
+
+Admin → /admin/dashboard
+
+Teacher → /teacher/dashboard
+
+Accounting → /accounting/dashboard
+
+Parent → /parent/dashboard
+
+No client-side role selection.
+
+Passwords hashed with bcrypt (12+ rounds).
+
+HTTP-only, Secure cookies in production.
+
+Session timeout (e.g., 30 min idle logout).
+
+CSRF protection on all state-changing routes.
+
+Force password change for seeded/temporary accounts.
+
+Account lockout after 5 failed login attempts.
+
+Password policy: minimum 12 characters, one uppercase, one number, one symbol.
+
+4. Database Schema (Drizzle + PostgreSQL)
+
+users → id (UUID), email, password_hash, role
+
+parents → id (UUID), user_id → users.id
+
+teachers → id (UUID), user_id → users.id
+
+students → id, full_name, class, admission_number
+
+parent_students → parent_id → parents.id, student_id → students.id
+
+bills → id, student_id, amount, term, document_url, status (PENDING/PAID)
+
+receipts → id, bill_id, uploaded_by_parent_id, file_url, status (PENDING/APPROVED/REJECTED)
+
+results → id, student_id, term, file_url
+
+5. Backend Routes (Role-Scoped)
+
+Auth: /auth/login, /auth/logout, /auth/me
+
+Admin: /admin/students (POST), /admin/link-parent (POST), /admin/bills (POST), /admin/results (POST), /admin/receipts (GET), /admin/receipts/:id (PATCH), /admin/users/parent (POST), /admin/users/admin (POST), /admin/users/teacher (POST)
+
+Teacher: /teacher/students (POST), /teacher/link-parent (POST), /teacher/bills (POST), /teacher/results (POST), /teacher/my-students (GET)
+
+Accounting: /accounting/bills (GET/POST), /accounting/receipts (GET), /accounting/receipts/:id (PATCH)
+
+Parent: /parent/wards (GET), /parent/bills (GET), /parent/receipts (POST), /parent/results/:studentId (GET)
+
+Every route enforces authentication, role, and ownership where applicable.
+
+6. Frontend
+
+Dedicated dashboards/pages per role: Admin, Teacher, Accounting, Parent
+
+Login Page: Split-screen layout with branding
+
+Admin Dashboard: Student Directory, Billing Overview, Receipt Approvals, Result Uploads, User Management (Add Parent, Admin, Teacher, View Users)
+
+Teacher Dashboard: Manage Students, Link Parents, Send Bills, Upload Results
+
+Accounting Dashboard: View Receipts & Bills, Approve/Reject Receipts, Generate Bills if needed
+
+Parent Dashboard: My Wards, Bills & Payments, Academic Results
+
+Redirect logic enforced based on role from backend response
+
+Error messages stay inside cards
+
+7. File Uploads
+
+Multer for PDF, PNG, JPG
+
+Files renamed with UUIDs
+
+Receipt approval changes only status, never file
+
+Upload directory configurable via environment variable
+
+File size limit: 10 MB
+
+Serve files behind authentication, never public URLs
+
+Optional: virus/malware scanning for production
+
+8. Environment Variables
+
+NODE_ENV, PORT, DATABASE_URL, SESSION_SECRET, UPLOAD_DIR, VITE_API_URL
+
+No platform-specific code; fully environment-agnostic
+
+9. Security Measures
+
+Role-based access control on all routes
+
+CSRF protection
+
+Rate limiting per IP (100 requests per 10 min on sensitive routes)
+
+Input validation and sanitization (XSS, SQL Injection prevention)
+
+HTTPS enforced in production
+
+Password hashing (bcrypt 12+)
+
+Account lockout for brute-force prevention
+
+Force password reset for temporary credentials
+
+No role elevation via frontend or API
+
+File uploads validated by MIME type and extension
+
+Audit logs recommended for all admin/teacher/accounting actions
+
+10. Seed Script
+
+Create first admin (siomoyemi@gmail.com) with strong temporary password
+
+One-time run, then disable or delete
+
+11. Folder Structure
+impacthouse-portal/
+├── backend/
+│   ├── src/
+│   ├── scripts/           # seed scripts, migrations
+│   ├── package.json
+│   └── drizzle.config.ts
+├── frontend/
+│   ├── src/
+│   ├── index.html
+│   └── package.json
+├── .env.example
+└── README.md
+
+12. Deliverables
+
+Fully working frontend & backend
+
+Dedicated dashboards/pages for Admin, Teacher, Accounting, and Parent
+
+Seed script for initial admin
+
+Environment-agnostic configuration
+
+Tailwind + shadcn styling
+
+Complete authentication & role-based authorization
+
+File uploads & receipt approval workflow
+
+Security hardened: CSRF, HTTPS, rate limiting, XSS/SQL injection protection, secure session management
+
+This refinement:
+✅ Clearly separates dashboards/pages per role
+✅ Defines who can do what in functional terms
+✅ Ensures Accounting can approve receipts only
+✅ Teachers can add students/parents and send bills, but cannot approve
+✅ Admins retain full system control
