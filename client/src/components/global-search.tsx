@@ -40,6 +40,10 @@ export function GlobalSearch() {
   });
 
   const onSelect = (path: string) => {
+    // If we're already on the billing page and trying to navigate to it with new params,
+    // wouter's setLocation might not trigger a state update for the search params.
+    // We force a refresh of the search params by using window.history if needed, 
+    // but better to just use setLocation and ensure the billing page listens to 'location'.
     setLocation(path);
     setOpen(false);
   };

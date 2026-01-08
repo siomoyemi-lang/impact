@@ -47,6 +47,10 @@ export default function AdminBilling() {
     if (action === 'create' && studentId) {
       setCreateOpen(true);
       form.setValue('studentId', parseInt(studentId));
+      
+      // Clean up URL parameters without reloading to prevent form reopening on refresh
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
     }
   }, [location, form]);
 
