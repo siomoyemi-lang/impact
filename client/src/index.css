@@ -8,15 +8,15 @@
   --font-display: 'Inter', sans-serif;
   --font-body: 'Inter', sans-serif;
 
-  /* Professional Navy & Royal Blue Palette */
-  --background: 210 20% 98%;
-  --foreground: 222 47% 11%;
+  /* ImpactHouse Schools Official Palette */
+  --primary: 210 90% 50%; /* Vibrant Blue from logo */
+  --primary-foreground: 0 0% 100%;
 
-  --primary: 222 47% 11%; /* Deep Navy */
-  --primary-foreground: 210 40% 98%;
-
-  --secondary: 221 83% 53%; /* Royal Blue */
+  --secondary: 195 80% 45%; /* Lighter Blue */
   --secondary-foreground: 0 0% 100%;
+
+  --accent: 15 90% 55%; /* Orange/Flame color from logo */
+  --accent-foreground: 0 0% 100%;
 
   --muted: 210 40% 96%;
   --muted-foreground: 215 16% 47%;

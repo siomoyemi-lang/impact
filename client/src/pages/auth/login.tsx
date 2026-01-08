@@ -46,8 +46,8 @@ export default function LoginPage() {
       <div className="flex-1 flex items-center justify-center p-8 bg-slate-50">
         <div className="w-full max-w-md space-y-8 animate-in fade-in duration-700 slide-in-from-left-4">
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded bg-slate-900 mb-6 shadow-xl shadow-slate-200">
-              <span className="text-white font-bold text-2xl tracking-tighter italic">I</span>
+            <div className="inline-flex items-center justify-center w-24 h-24 mb-6">
+              <img src="https://www.impactschools.com.ng/images/logo.png" alt="ImpactHouse Logo" className="w-full h-full object-contain" />
             </div>
             <h1 className="text-3xl font-semibold text-slate-900 tracking-tight">Portal Access</h1>
             <p className="mt-2 text-slate-500 font-medium">Enter your credentials to continue</p>
@@ -128,26 +128,26 @@ export default function LoginPage() {
 
       {/* Right Panel - Branding */}
       <div className="hidden lg:flex flex-1 bg-slate-950 relative overflow-hidden items-center justify-center p-12">
-        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center opacity-10"></div>
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900/90 to-blue-900/10"></div>
+        <div className="absolute inset-0 bg-[url('https://www.impactschools.com.ng/images/about-sec-img.png')] bg-cover bg-center opacity-20"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 via-slate-900/95 to-slate-950"></div>
         
         <div className="relative z-10 max-w-lg space-y-8 animate-in fade-in duration-1000 slide-in-from-right-4">
-          <div className="w-12 h-1 bg-blue-600 mb-2" />
+          <div className="w-12 h-1 bg-blue-500 mb-2" />
           <h2 className="text-5xl font-bold text-white leading-[1.1] tracking-tight">
-            Nurturing <span className="text-blue-500">Excellence</span> through Innovation.
+            Education For <span className="text-blue-400">Your Children.</span>
           </h2>
-          <p className="text-lg text-slate-400 leading-relaxed font-medium">
-            A unified environment for school management, academic records, and secure financial processing.
+          <p className="text-lg text-slate-300 leading-relaxed font-medium">
+            Early years are highly important in education. We offer children the support of a stable and secure environment.
           </p>
           
-          <div className="grid grid-cols-2 gap-8 mt-12 pt-12 border-t border-white/5">
+          <div className="grid grid-cols-2 gap-8 mt-12 pt-12 border-t border-white/10">
             <div>
-              <p className="text-2xl font-bold text-white">100%</p>
-              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Digital Billing</p>
+              <p className="text-2xl font-bold text-white italic">Compete</p>
+              <p className="text-[10px] text-blue-400 font-bold uppercase tracking-widest mt-1">Globally</p>
             </div>
             <div>
-              <p className="text-2xl font-bold text-white tracking-tighter">SECURE</p>
-              <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Data Access</p>
+              <p className="text-2xl font-bold text-white tracking-tighter uppercase">Active</p>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Learning</p>
             </div>
           </div>
         </div>
