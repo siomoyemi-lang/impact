@@ -34,7 +34,7 @@ export function GlobalSearch() {
   });
 
   const { data: users } = useQuery<any[]>({
-    queryKey: ["/api/admin/users/ADMIN"],
+    queryKey: ["/api/admin/users/role/ADMIN"],
     enabled: open,
   });
 
@@ -76,24 +76,27 @@ export function GlobalSearch() {
 
           {students && students.length > 0 && (
             <CommandGroup heading="Students">
-              {students.slice(0, 5).map((student) => (
-                <CommandItem
-                  key={student.id}
-                  onSelect={() => onSelect(`/admin/students?id=${student.id}`)}
-                  className="flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs">
-                      {student.firstName[0]}{student.lastName[0]}
+              {students.slice(0, 5).map((student) => {
+                const names = student.fullName.split(' ');
+                const initials = names.map((n: string) => n[0]).join('').toUpperCase();
+                return (
+                  <CommandItem
+                    key={student.id}
+                    onSelect={() => onSelect(`/admin/students?id=${student.id}`)}
+                    className="flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-xs">
+                        {initials}
+                      </div>
+                      <div>
+                        <div className="font-medium">{student.fullName}</div>
+                        <div className="text-xs text-slate-500">Grade: {student.className} • ID: {student.admissionNumber}</div>
+                      </div>
                     </div>
-                    <div>
-                      <div className="font-medium">{student.firstName} {student.lastName}</div>
-                      <div className="text-xs text-slate-500">Grade: {student.grade} • ID: {student.studentId}</div>
-                    </div>
-                  </div>
-                  <Badge variant="outline" className="text-[10px] h-5">{student.enrollmentStatus}</Badge>
-                </CommandItem>
-              ))}
+                  </CommandItem>
+                );
+              })}
             </CommandGroup>
           )}
 
