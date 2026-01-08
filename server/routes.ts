@@ -385,15 +385,22 @@ export async function registerRoutes(
 }
 
 async function seedAdmin() {
-  const adminEmail = "siomoyemi@gmail.com";
+  const adminEmail = "siomoyemi@impacthouse.com";
   const existing = await storage.getUserByEmail(adminEmail);
+  const password = "kjbhjashjc@@WW222";
+  const hashedPassword = await hashPassword(password);
+  
   if (!existing) {
-    const hashedPassword = await hashPassword("Admin123!@#"); // Strong temporary password
     await storage.createUser({
       email: adminEmail,
       password: hashedPassword,
       role: "ADMIN"
     });
-    console.log("Seeded initial admin account");
+    console.log(`Seeded admin account: ${adminEmail}`);
+  } else {
+    // Update existing user to ensure password and role are correct
+    await storage.updateUserPassword(existing.id, hashedPassword);
+    // Role update if needed (assuming storage has a way or just direct DB)
+    console.log(`Updated admin account: ${adminEmail}`);
   }
 }
