@@ -66,7 +66,7 @@ export function RoleLayout({ children, role }: { children: React.ReactNode, role
         "fixed lg:static inset-y-0 left-0 z-50 w-64 bg-slate-950 text-slate-100 transform transition-transform duration-200 ease-in-out lg:translate-x-0 flex flex-col border-r border-slate-800 shadow-xl",
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}>
-        <div className="h-16 flex items-center px-6 border-b border-slate-800 bg-slate-950/50 backdrop-blur-sm">
+        <div className="h-16 flex items-center px-6 border-b border-slate-800 bg-slate-950 shadow-sm">
           <div className="flex items-center gap-2 font-semibold text-xl tracking-tight">
             <div className="w-8 h-8 rounded bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/20">
               <span className="text-white text-lg font-bold">I</span>
@@ -103,7 +103,7 @@ export function RoleLayout({ children, role }: { children: React.ReactNode, role
           })}
         </div>
 
-        <div className="p-4 border-t border-slate-800 bg-slate-950/30">
+        <div className="p-4 border-t border-slate-800 bg-slate-900">
           <div className="flex items-center gap-3 mb-4 px-2">
             <div className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-white shadow-inner">
               {user?.email?.charAt(0).toUpperCase() || 'U'}
@@ -127,7 +127,7 @@ export function RoleLayout({ children, role }: { children: React.ReactNode, role
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
-        <header className="h-16 bg-white border-b border-slate-200/60 flex items-center justify-between px-4 lg:px-8 sticky top-0 z-30">
+        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 lg:px-8 sticky top-0 z-30 shadow-sm">
           <button 
             className="lg:hidden p-2 -ml-2 text-slate-600 hover:bg-slate-50 rounded-md"
             onClick={() => setSidebarOpen(true)}

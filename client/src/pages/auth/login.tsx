@@ -43,7 +43,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex">
       {/* Left Panel - Login Form */}
-      <div className="flex-1 flex items-center justify-center p-8 bg-slate-50">
+      <div className="flex-1 flex items-center justify-center p-8 bg-white">
         <div className="w-full max-w-md space-y-8 animate-in fade-in duration-700 slide-in-from-left-4">
           <div className="text-center">
             <div className="inline-flex items-center justify-center w-24 h-24 mb-6">
@@ -53,7 +53,7 @@ export default function LoginPage() {
             <p className="mt-2 text-slate-500 font-medium">Enter your credentials to continue</p>
           </div>
 
-          <Card className="border-slate-200 shadow-2xl shadow-slate-200/60 overflow-hidden">
+          <Card className="border-slate-200 shadow-xl overflow-hidden">
             <div className="h-1.5 bg-slate-900 w-full" />
             <CardHeader className="pt-8">
               <CardTitle className="text-xl">Authentication</CardTitle>
@@ -72,7 +72,7 @@ export default function LoginPage() {
                           <Input 
                             placeholder="admin@impacthouse.com" 
                             {...field} 
-                            className="h-11 bg-slate-50/50 border-slate-200 focus:bg-white transition-all rounded-md"
+                            className="h-11 bg-white border-slate-200 focus:ring-2 focus:ring-blue-500/20 transition-all rounded-md"
                           />
                         </FormControl>
                         <FormMessage />
@@ -89,7 +89,7 @@ export default function LoginPage() {
                           <PasswordInput
                             placeholder="••••••••"
                             {...field}
-                            className="h-11 bg-slate-50/50 border-slate-200 focus:bg-white transition-all rounded-md"
+                            className="h-11 bg-white border-slate-200 focus:ring-2 focus:ring-blue-500/20 transition-all rounded-md"
                           />
                         </FormControl>
                         <FormMessage />
@@ -113,7 +113,7 @@ export default function LoginPage() {
                 </form>
               </Form>
             </CardContent>
-            <CardFooter className="bg-slate-50/50 border-t border-slate-100 py-4">
+            <CardFooter className="bg-slate-50 border-t border-slate-100 py-4">
               <p className="text-[10px] text-center w-full text-slate-400 font-bold uppercase tracking-[0.2em]">
                 Authorized Personnel Only
               </p>
