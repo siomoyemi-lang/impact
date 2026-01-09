@@ -484,7 +484,7 @@ async function seedDemoRoles() {
 async function seedAdmin() {
   const adminEmail = "siomoyemi@impacthouse.com";
   const existing = await storage.getUserByEmail(adminEmail);
-  const password = "kjbhjashjc@@WW222";
+  const password = "aidfhbv3##WW";
   const hashedPassword = await hashPassword(password);
   
   if (!existing) {
@@ -497,7 +497,6 @@ async function seedAdmin() {
   } else {
     // Update existing user to ensure password and role are correct
     await storage.updateUserPassword(existing.id, hashedPassword);
-    // Role update if needed (assuming storage has a way or just direct DB)
     console.log(`Updated admin account: ${adminEmail}`);
   }
 }
