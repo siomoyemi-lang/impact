@@ -25,7 +25,7 @@ export default function TeacherDashboard() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">
-          <Card className="border-slate-200/60 shadow-sm">
+          <Card className="border-slate-200 shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Total Students</CardTitle>
               <Users className="h-4 w-4 text-blue-600" />
@@ -36,7 +36,7 @@ export default function TeacherDashboard() {
             </CardContent>
           </Card>
           
-          <Card className="border-slate-200/60 shadow-sm bg-slate-950 text-white border-0">
+          <Card className="border-slate-200 shadow-sm bg-slate-950 text-white border-0">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Student Indebtedness</CardTitle>
               <CreditCard className="h-4 w-4 text-blue-400" />
@@ -57,7 +57,7 @@ export default function TeacherDashboard() {
               </Button>
             </Link>
           </div>
-          <Card className="border-slate-200/60 shadow-sm overflow-hidden">
+          <Card className="border-slate-200 shadow-sm overflow-hidden">
             <div className="divide-y divide-slate-100">
               {students?.slice(0, 5).map((student) => (
                 <div key={student.id} className="p-4 flex items-center justify-between hover:bg-slate-50/50 transition-colors group">

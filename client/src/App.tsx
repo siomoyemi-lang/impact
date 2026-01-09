@@ -22,9 +22,9 @@ import TeacherBilling from "@/pages/teacher/billing";
 import TeacherResults from "@/pages/teacher/results";
 
 // Accounting Pages
-import AccountingDashboard from "@/pages/accounting/dashboard";
-import AccountingBilling from "@/pages/accounting/billing";
-import AccountingReceipts from "@/pages/accounting/receipts";
+import AccountingDashboard from "@/pages/accounting-dashboard";
+import AccountingBilling from "@/pages/accounting-billing";
+import AccountingReceipts from "@/pages/accounting-receipts";
 
 // Parent Pages
 import ParentDashboard from "@/pages/parent/dashboard";

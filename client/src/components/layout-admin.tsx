@@ -116,7 +116,7 @@ export function RoleLayout({ children, role }: { children: React.ReactNode, role
           <Button 
             variant="ghost" 
             size="sm"
-            className="w-full justify-start text-slate-400 hover:text-red-400 hover:bg-red-500/10 h-10 px-3"
+            className="w-full justify-start text-slate-400 hover:text-red-400 hover:bg-red-500/10 h-10 px-3 no-default-hover-elevate no-default-active-elevate"
             onClick={handleLogout}
           >
             <LogOut className="w-4 h-4 mr-2" />
@@ -140,7 +140,7 @@ export function RoleLayout({ children, role }: { children: React.ReactNode, role
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Header actions */}
+            <ThemeToggle />
           </div>
         </header>
 

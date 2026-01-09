@@ -157,10 +157,10 @@ export default function AdminBilling() {
           </Dialog>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200/60 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
           <Table>
             <TableHeader>
-              <TableRow className="bg-slate-50/50 hover:bg-slate-50/50">
+              <TableRow className="bg-slate-50 hover:bg-slate-50">
                 <TableHead className="font-bold text-slate-500 text-[11px] uppercase tracking-wider py-4 px-6">Bill ID</TableHead>
                 <TableHead className="font-bold text-slate-500 text-[11px] uppercase tracking-wider py-4">Student</TableHead>
                 <TableHead className="font-bold text-slate-500 text-[11px] uppercase tracking-wider py-4">Term</TableHead>

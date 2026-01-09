@@ -234,7 +234,7 @@ export default function UserManagement() {
           </TabsList>
 
           <TabsContent value="parent" className="space-y-6">
-            <Card>
+            <Card className="border-slate-200">
               <CardHeader>
                 <CardTitle>New Parent Account</CardTitle>
                 <CardDescription>Create a login for a student's guardian</CardDescription>
@@ -245,18 +245,18 @@ export default function UserManagement() {
                     <FormField control={parentForm.control} name="email" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Email Address</FormLabel>
-                        <FormControl><Input placeholder="parent@example.com" {...field} /></FormControl>
+                        <FormControl><Input placeholder="parent@example.com" {...field} className="bg-white" /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
                     <FormField control={parentForm.control} name="password" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Password</FormLabel>
-                        <FormControl><PasswordInput {...field} /></FormControl>
+                        <FormControl><PasswordInput {...field} className="bg-white" /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <Button type="submit" className="w-full" disabled={createUserMutation.isPending}>
+                    <Button type="submit" className="w-full bg-slate-900 hover:bg-slate-800" disabled={createUserMutation.isPending}>
                       Create Parent Account
                     </Button>
                   </form>
@@ -267,7 +267,7 @@ export default function UserManagement() {
           </TabsContent>
 
           <TabsContent value="teacher" className="space-y-6">
-            <Card>
+            <Card className="border-slate-200">
               <CardHeader>
                 <CardTitle>New Teacher Account</CardTitle>
                 <CardDescription>Create a login for a staff teacher</CardDescription>
@@ -278,18 +278,18 @@ export default function UserManagement() {
                     <FormField control={parentForm.control} name="email" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Email Address</FormLabel>
-                        <FormControl><Input placeholder="teacher@school.com" {...field} /></FormControl>
+                        <FormControl><Input placeholder="teacher@school.com" {...field} className="bg-white" /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
                     <FormField control={parentForm.control} name="password" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Password</FormLabel>
-                        <FormControl><PasswordInput {...field} /></FormControl>
+                        <FormControl><PasswordInput {...field} className="bg-white" /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <Button type="submit" className="w-full" disabled={createUserMutation.isPending}>
+                    <Button type="submit" className="w-full bg-slate-900 hover:bg-slate-800" disabled={createUserMutation.isPending}>
                       Create Teacher Account
                     </Button>
                   </form>
@@ -300,7 +300,7 @@ export default function UserManagement() {
           </TabsContent>
 
           <TabsContent value="accounting" className="space-y-6">
-            <Card>
+            <Card className="border-slate-200">
               <CardHeader>
                 <CardTitle>New Accounting Account</CardTitle>
                 <CardDescription>Create a login for accounting staff</CardDescription>
@@ -311,18 +311,18 @@ export default function UserManagement() {
                     <FormField control={parentForm.control} name="email" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Email Address</FormLabel>
-                        <FormControl><Input placeholder="accounting@school.com" {...field} /></FormControl>
+                        <FormControl><Input placeholder="accounting@school.com" {...field} className="bg-white" /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
                     <FormField control={parentForm.control} name="password" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Password</FormLabel>
-                        <FormControl><PasswordInput {...field} /></FormControl>
+                        <FormControl><PasswordInput {...field} className="bg-white" /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <Button type="submit" className="w-full" disabled={createUserMutation.isPending}>
+                    <Button type="submit" className="w-full bg-slate-900 hover:bg-slate-800" disabled={createUserMutation.isPending}>
                       Create Accounting Account
                     </Button>
                   </form>
@@ -344,14 +344,14 @@ export default function UserManagement() {
                     <FormField control={adminForm.control} name="email" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Email Address</FormLabel>
-                        <FormControl><Input placeholder="admin@school.com" {...field} /></FormControl>
+                        <FormControl><Input placeholder="admin@school.com" {...field} className="bg-white" /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
                     <FormField control={adminForm.control} name="password" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Password</FormLabel>
-                        <FormControl><PasswordInput {...field} /></FormControl>
+                        <FormControl><PasswordInput {...field} className="bg-white" /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />

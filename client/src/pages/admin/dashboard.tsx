@@ -39,7 +39,7 @@ export default function AdminDashboard() {
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <Card className="border-slate-200/60 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="border-slate-200 shadow-sm hover:shadow-md transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Total Students</CardTitle>
               <Users className="h-4 w-4 text-blue-600" />
@@ -50,7 +50,7 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
           
-          <Card className="border-slate-200/60 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="border-slate-200 shadow-sm hover:shadow-md transition-shadow">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Pending Receipts</CardTitle>
               <FileCheck className="h-4 w-4 text-amber-500" />
@@ -61,10 +61,10 @@ export default function AdminDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="border-slate-200/60 shadow-sm hover:shadow-md transition-shadow bg-slate-950 text-white border-0">
+          <Card className="border-slate-200 shadow-sm hover:shadow-md transition-shadow bg-slate-950 text-white border-0">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Outstanding Revenue</CardTitle>
-              <div className="h-8 w-8 rounded bg-blue-600/20 flex items-center justify-center">
+              <div className="h-8 w-8 rounded bg-blue-600 flex items-center justify-center">
                 <span className="text-blue-400 text-xs font-bold">$</span>
               </div>
             </CardHeader>
@@ -86,7 +86,7 @@ export default function AdminDashboard() {
                 </Button>
               </Link>
             </div>
-            <Card className="border-slate-200/60 shadow-sm overflow-hidden">
+            <Card className="border-slate-200 shadow-sm overflow-hidden">
               <div className="divide-y divide-slate-100">
                 {receipts?.filter(r => r.status === 'PENDING').slice(0, 5).map((receipt) => (
                   <div key={receipt.id} className="p-4 flex items-center justify-between hover:bg-slate-50/50 transition-colors group">
@@ -124,7 +124,7 @@ export default function AdminDashboard() {
                 </Button>
               </Link>
             </div>
-            <Card className="border-slate-200/60 shadow-sm overflow-hidden">
+            <Card className="border-slate-200 shadow-sm overflow-hidden">
               <div className="divide-y divide-slate-100">
                 {students?.slice(0, 5).map((student) => (
                   <div key={student.id} className="p-4 flex items-center justify-between hover:bg-slate-50/50 transition-colors group">
