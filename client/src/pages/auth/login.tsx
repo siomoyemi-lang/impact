@@ -12,7 +12,7 @@ import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 
 const loginSchema = z.object({
-  username: z.string().email("Please enter a valid email"),
+  username: z.string().min(1, "Email is required").transform(v => v.trim()).pipe(z.string().email("Please enter a valid email")),
   password: z.string().min(1, "Password is required"),
 });
 
