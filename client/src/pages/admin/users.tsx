@@ -24,9 +24,15 @@ const userSchema = z.object({
 });
 
 export default function UserManagement() {
+    ACCOUNTING: { title: "Accounting Staff", color: "bg-green-600", icon: Shield },
+    TEACHER: { title: "Teachers", color: "bg-purple-600", icon: Users },
+  };
+
   const createUserMutation = useCreateUser();
   const { data: parents, isLoading: loadingParents } = useUsersByRole("PARENT");
   const { data: admins, isLoading: loadingAdmins } = useUsersByRole("ADMIN");
+  const { data: teachers, isLoading: loadingTeachers } = useUsersByRole("TEACHER");
+  const { data: accounting, isLoading: loadingAccounting } = useUsersByRole("ACCOUNTING");
   const changePasswordMutation = useChangeUserPassword();
   const updateUserMutation = useUpdateUser();
   const deleteUserMutation = useDeleteUser();
@@ -208,14 +214,22 @@ export default function UserManagement() {
         </div>
 
         <Tabs defaultValue="parent" className="max-w-4xl mx-auto">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
+          <TabsList className="grid w-full grid-cols-4 mb-8">
             <TabsTrigger value="parent" className="flex items-center gap-2">
               <User className="w-4 h-4" />
               Parents
             </TabsTrigger>
+            <TabsTrigger value="teacher" className="flex items-center gap-2">
+              <Users className="w-4 h-4" />
+              Teachers
+            </TabsTrigger>
+            <TabsTrigger value="accounting" className="flex items-center gap-2">
+              <Shield className="w-4 h-4" />
+              Accounting
+            </TabsTrigger>
             <TabsTrigger value="admin" className="flex items-center gap-2">
               <Shield className="w-4 h-4" />
-              Administrators
+              Admins
             </TabsTrigger>
           </TabsList>
 
@@ -227,33 +241,22 @@ export default function UserManagement() {
               </CardHeader>
               <CardContent>
                 <Form {...parentForm}>
-                  <form onSubmit={parentForm.handleSubmit(onParentSubmit)} className="space-y-4">
-                    <FormField
-                      control={parentForm.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email Address</FormLabel>
-                          <FormControl><Input placeholder="parent@example.com" {...field} /></FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={parentForm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Password</FormLabel>
-                          <FormControl>
-                            <PasswordInput {...field} className="" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <form onSubmit={parentForm.handleSubmit((data) => createUserMutation.mutate({ ...data, type: 'parent' }, { onSuccess: () => parentForm.reset() }))} className="space-y-4">
+                    <FormField control={parentForm.control} name="email" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email Address</FormLabel>
+                        <FormControl><Input placeholder="parent@example.com" {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <FormField control={parentForm.control} name="password" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl><PasswordInput {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
                     <Button type="submit" className="w-full" disabled={createUserMutation.isPending}>
-                      {createUserMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       Create Parent Account
                     </Button>
                   </form>
@@ -263,8 +266,74 @@ export default function UserManagement() {
             <UserList users={parents} isLoading={loadingParents} title="Parent" />
           </TabsContent>
 
+          <TabsContent value="teacher" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>New Teacher Account</CardTitle>
+                <CardDescription>Create a login for a staff teacher</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Form {...parentForm}>
+                  <form onSubmit={parentForm.handleSubmit((data) => createUserMutation.mutate({ ...data, type: 'teacher' }, { onSuccess: () => parentForm.reset() }))} className="space-y-4">
+                    <FormField control={parentForm.control} name="email" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email Address</FormLabel>
+                        <FormControl><Input placeholder="teacher@school.com" {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <FormField control={parentForm.control} name="password" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl><PasswordInput {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <Button type="submit" className="w-full" disabled={createUserMutation.isPending}>
+                      Create Teacher Account
+                    </Button>
+                  </form>
+                </Form>
+              </CardContent>
+            </Card>
+            <UserList users={teachers} isLoading={loadingTeachers} title="Teacher" />
+          </TabsContent>
+
+          <TabsContent value="accounting" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>New Accounting Account</CardTitle>
+                <CardDescription>Create a login for accounting staff</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Form {...parentForm}>
+                  <form onSubmit={parentForm.handleSubmit((data) => createUserMutation.mutate({ ...data, type: 'accounting' }, { onSuccess: () => parentForm.reset() }))} className="space-y-4">
+                    <FormField control={parentForm.control} name="email" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email Address</FormLabel>
+                        <FormControl><Input placeholder="accounting@school.com" {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <FormField control={parentForm.control} name="password" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl><PasswordInput {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <Button type="submit" className="w-full" disabled={createUserMutation.isPending}>
+                      Create Accounting Account
+                    </Button>
+                  </form>
+                </Form>
+              </CardContent>
+            </Card>
+            <UserList users={accounting} isLoading={loadingAccounting} title="Accounting" />
+          </TabsContent>
+
           <TabsContent value="admin" className="space-y-6">
-            <Card className="border-red-100 bg-red-50/10">
+            <Card className="border-red-100 bg-red-50">
               <CardHeader>
                 <CardTitle className="text-red-900">New Administrator</CardTitle>
                 <CardDescription>Grant full system access to a staff member</CardDescription>
@@ -272,32 +341,21 @@ export default function UserManagement() {
               <CardContent>
                 <Form {...adminForm}>
                   <form onSubmit={adminForm.handleSubmit(onAdminSubmit)} className="space-y-4">
-                    <FormField
-                      control={adminForm.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email Address</FormLabel>
-                          <FormControl><Input placeholder="admin@school.com" {...field} /></FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={adminForm.control}
-                      name="password"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Password</FormLabel>
-                          <FormControl>
-                            <PasswordInput {...field} className="" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                    <FormField control={adminForm.control} name="email" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email Address</FormLabel>
+                        <FormControl><Input placeholder="admin@school.com" {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <FormField control={adminForm.control} name="password" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl><PasswordInput {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
                     <Button type="submit" variant="destructive" className="w-full" disabled={createUserMutation.isPending}>
-                      {createUserMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       Create Admin Account
                     </Button>
                   </form>
