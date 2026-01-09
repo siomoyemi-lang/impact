@@ -45,7 +45,7 @@ export function RoleLayout({ children, role }: { children: React.ReactNode, role
   };
 
   const navigation = navigationMap[role] || [];
-  const roleLabel = role.charAt(0) + role.slice(1).toLowerCase();
+  const roleLabel = role === 'ACCOUNTING' ? 'Accounting' : (role.charAt(0) + role.slice(1).toLowerCase());
 
   const handleLogout = () => {
     logoutMutation.mutate();

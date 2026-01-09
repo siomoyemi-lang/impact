@@ -210,7 +210,7 @@ export default function UserManagement() {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-display font-bold text-slate-900">User Management</h1>
-          <p className="text-slate-500">Create and manage accounts for administrators and parents</p>
+          <p className="text-slate-500">Create and manage accounts for all staff departments and parents</p>
         </div>
 
         <Tabs defaultValue="parent" className="max-w-4xl mx-auto">
