@@ -10,12 +10,43 @@ import {
   LogOut,
   Menu,
   X,
-  Search
+  Search,
+  Sun,
+  Moon
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { GlobalSearch } from "./global-search";
+
+function ThemeToggle() {
+  const [theme, setTheme] = useState<"light" | "dark">(
+    () => (localStorage.getItem("theme") as "light" | "dark") || "light"
+  );
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    root.classList.remove("light", "dark");
+    root.classList.add(theme);
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+      className="h-9 w-9 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+    >
+      {theme === "light" ? (
+        <Moon className="h-4 w-4" />
+      ) : (
+        <Sun className="h-4 w-4" />
+      )}
+      <span className="sr-only">Toggle theme</span>
+    </Button>
+  );
+}
 
 export function RoleLayout({ children, role }: { children: React.ReactNode, role: 'ADMIN' | 'TEACHER' | 'ACCOUNTING' }) {
   const { logoutMutation, user } = useAuth();
