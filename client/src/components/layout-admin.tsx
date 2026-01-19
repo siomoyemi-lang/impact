@@ -65,7 +65,6 @@ export function RoleLayout({ children, role }: { children: React.ReactNode, role
     TEACHER: [
       { name: 'Dashboard', href: '/teacher/dashboard', icon: LayoutDashboard },
       { name: 'Manage Students', href: '/teacher/students', icon: Users },
-      { name: 'Send Bills', href: '/teacher/billing', icon: CreditCard },
       { name: 'Upload Results', href: '/teacher/results', icon: FileText },
     ],
     ACCOUNTING: [

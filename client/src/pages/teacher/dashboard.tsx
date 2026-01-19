@@ -35,17 +35,6 @@ export default function TeacherDashboard() {
               <p className="text-[10px] text-slate-400 font-medium uppercase mt-1 tracking-tight">Active enrollment</p>
             </CardContent>
           </Card>
-          
-          <Card className="border-slate-200 shadow-sm bg-slate-950 text-white border-0">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Student Indebtedness</CardTitle>
-              <CreditCard className="h-4 w-4 text-blue-400" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">${totalOutstanding.toLocaleString()}</div>
-              <p className="text-[10px] text-slate-500 font-medium uppercase mt-1 tracking-tight">Pending billing</p>
-            </CardContent>
-          </Card>
         </div>
 
         <div className="space-y-4">
