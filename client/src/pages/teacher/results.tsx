@@ -6,16 +6,19 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
-import { FileText, Plus, Loader2 } from "lucide-react";
+import { Search, FileText, Plus, Loader2, Check, ChevronsUpDown } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export default function TeacherResults() {
   const { data: students } = useStudents();
   const uploadResultMutation = useUploadResult();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const form = useForm({
     defaultValues: {
@@ -24,6 +27,13 @@ export default function TeacherResults() {
       file: null as File | null,
     }
   });
+
+  const selectedStudentName = useMemo(() => {
+    const studentId = form.watch("studentId");
+    if (!studentId || !students) return "";
+    const student = students.find(s => s.id.toString() === studentId);
+    return student ? `${student.fullName} (${student.admissionNumber})` : "";
+  }, [form.watch("studentId"), students]);
 
   const onSubmit = async (data: any) => {
     if (!data.file) return;
@@ -64,14 +74,56 @@ export default function TeacherResults() {
                     control={form.control}
                     name="studentId"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="flex flex-col">
                         <FormLabel>Student</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="Select student" /></SelectTrigger></FormControl>
-                          <SelectContent>
-                            {students?.map(s => <SelectItem key={s.id} value={s.id.toString()}>{s.fullName}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
+                        <Popover open={searchOpen} onOpenChange={setSearchOpen}>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant="outline"
+                                role="combobox"
+                                aria-expanded={searchOpen}
+                                className={cn(
+                                  "w-full justify-between h-11 font-normal",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value
+                                  ? selectedStudentName
+                                  : "Search and select student..."}
+                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                            <Command>
+                              <CommandInput placeholder="Search student name or admission number..." />
+                              <CommandList>
+                                <CommandEmpty>No student found.</CommandEmpty>
+                                <CommandGroup>
+                                  {students?.map((s) => (
+                                    <CommandItem
+                                      key={s.id}
+                                      value={`${s.fullName} ${s.admissionNumber}`}
+                                      onSelect={() => {
+                                        form.setValue("studentId", s.id.toString());
+                                        setSearchOpen(false);
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
+                                          field.value === s.id.toString() ? "opacity-100" : "opacity-0"
+                                        )}
+                                      />
+                                      {s.fullName} ({s.admissionNumber})
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
                         <FormMessage />
                       </FormItem>
                     )}
