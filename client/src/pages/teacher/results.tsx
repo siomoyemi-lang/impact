@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { Search, FileText, Plus, Loader2, Check, ChevronsUpDown } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { useState, useMemo } from "react";
