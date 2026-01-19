@@ -15,9 +15,10 @@ export interface IStorage {
   
   // Roles
   createParent(userId: number): Promise<Parent>;
-  createTeacher(userId: number): Promise<any>;
+  createTeacher(userId: number, className: string): Promise<any>;
   createAccounting(userId: number): Promise<any>;
   getParentByUserId(userId: number): Promise<Parent | undefined>;
+  getTeacherByUserId(userId: number): Promise<any | undefined>;
   getParentByEmail(email: string): Promise<Parent | undefined>; 
   createStudent(student: InsertStudent): Promise<Student>;
   getAllStudents(): Promise<Student[]>;
@@ -102,8 +103,13 @@ export class DatabaseStorage implements IStorage {
     return parent;
   }
 
-  async createTeacher(userId: number): Promise<any> {
-    const [teacher] = await db.insert(teachers).values({ userId }).returning();
+  async createTeacher(userId: number, className: string): Promise<any> {
+    const [teacher] = await db.insert(teachers).values({ userId, className }).returning();
+    return teacher;
+  }
+
+  async getTeacherByUserId(userId: number): Promise<any | undefined> {
+    const [teacher] = await db.select().from(teachers).where(eq(teachers.userId, userId));
     return teacher;
   }
 

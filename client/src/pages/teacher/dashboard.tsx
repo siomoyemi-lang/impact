@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { RoleLayout } from "@/components/layout-admin";
 import { useAuth } from "@/hooks/use-auth";
 import { useStudents, useAllBills } from "@/hooks/use-admin";
@@ -8,7 +9,7 @@ import { Link } from "wouter";
 
 export default function TeacherDashboard() {
   const { user } = useAuth();
-  const { data: students } = useStudents();
+  const { data: students } = useQuery<any[]>({ queryKey: ["/api/teacher/students"] });
   const { data: bills } = useAllBills();
 
   const totalStudents = students?.length || 0;

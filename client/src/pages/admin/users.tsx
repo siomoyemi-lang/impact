@@ -112,6 +112,17 @@ export default function UserManagement() {
     });
   }
 
+  const teacherForm = useForm<z.infer<typeof userSchema> & { className: string }>({
+    resolver: zodResolver(userSchema.extend({ className: z.string().min(1, "Class is required") })),
+    defaultValues: { email: "", password: "", className: "" },
+  });
+
+  function onTeacherSubmit(data: any) {
+    createUserMutation.mutate({ ...data, type: 'teacher' }, {
+      onSuccess: () => teacherForm.reset()
+    });
+  }
+
   const UserList = ({ users, isLoading, title }: { users: any[] | undefined, isLoading: boolean, title: string }) => (
     <Card className="mt-6">
       <CardHeader>
@@ -269,16 +280,23 @@ export default function UserManagement() {
                 <CardDescription>Create a login for a staff teacher</CardDescription>
               </CardHeader>
               <CardContent>
-                <Form {...parentForm}>
-                  <form onSubmit={parentForm.handleSubmit((data) => createUserMutation.mutate({ ...data, type: 'teacher' }, { onSuccess: () => parentForm.reset() }))} className="space-y-4">
-                    <FormField control={parentForm.control} name="email" render={({ field }) => (
+                <Form {...teacherForm}>
+                  <form onSubmit={teacherForm.handleSubmit(onTeacherSubmit)} className="space-y-4">
+                    <FormField control={teacherForm.control} name="email" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Email Address</FormLabel>
                         <FormControl><Input placeholder="teacher@school.com" {...field} className="bg-white" /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )} />
-                    <FormField control={parentForm.control} name="password" render={({ field }) => (
+                    <FormField control={teacherForm.control} name="className" render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Assigned Class</FormLabel>
+                        <FormControl><Input placeholder="e.g. JSS 1" {...field} className="bg-white" /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )} />
+                    <FormField control={teacherForm.control} name="password" render={({ field }) => (
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl><PasswordInput {...field} className="bg-white" /></FormControl>

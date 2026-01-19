@@ -27,6 +27,7 @@ export const parents = pgTable("parents", {
 export const teachers = pgTable("teachers", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull().references(() => users.id),
+  className: text("class_name"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

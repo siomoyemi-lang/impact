@@ -127,13 +127,12 @@ export async function registerRoutes(
   // Create teacher
   app.post("/api/admin/users/teacher", requireAdmin, async (req, res) => {
     try {
-      const input = api.admin.createAdmin.input.parse(req.body); // reuse same schema
-      const hashedPassword = await hashPassword(input.password);
-      const user = await storage.createUser({ ...input, password: hashedPassword, role: "TEACHER" });
-      await storage.createTeacher(user.id);
+      const { email, password, className } = req.body;
+      const hashedPassword = await hashPassword(password);
+      const user = await storage.createUser({ email, password: hashedPassword, role: "TEACHER" });
+      await storage.createTeacher(user.id, className);
       res.status(201).json(user);
     } catch (err) {
-      if (err instanceof z.ZodError) return res.status(400).json({ message: err.errors[0].message });
       res.status(500).json({ message: (err as Error).message });
     }
   });
@@ -240,6 +239,15 @@ export async function registerRoutes(
   app.get(api.admin.listStudents.path, requireAdmin, async (req, res) => {
     const students = await storage.getAllStudents();
     res.json(students);
+  });
+
+  app.get("/api/teacher/students", requireTeacher, async (req, res) => {
+    const user = req.user as any;
+    const teacher = await storage.getTeacherByUserId(user.id);
+    const allStudents = await storage.getAllStudents();
+    if (!teacher?.className) return res.json([]);
+    const filtered = allStudents.filter(s => s.className === teacher.className);
+    res.json(filtered);
   });
 
   app.post(api.admin.createStudent.path, requireAdmin, async (req, res) => {

@@ -1,5 +1,6 @@
 import { RoleLayout } from "@/components/layout-admin";
 import { useStudents, useCreateStudent, useLinkParent } from "@/hooks/use-admin";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -18,7 +19,7 @@ const linkParentSchema = z.object({
 });
 
 export default function TeacherStudents() {
-  const { data: students, isLoading } = useStudents();
+  const { data: students, isLoading } = useQuery<any[]>({ queryKey: ["/api/teacher/students"] });
   const createStudentMutation = useCreateStudent();
   const linkParentMutation = useLinkParent();
   
