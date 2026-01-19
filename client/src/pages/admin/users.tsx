@@ -12,7 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Loader2, Mail, Shield, User, Edit, Trash } from "lucide-react";
+import { Loader2, Mail, Shield, User, Edit, Trash, Users } from "lucide-react";
 
 const userSchema = z.object({
   email: z.string().email(),
