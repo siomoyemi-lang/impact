@@ -24,10 +24,6 @@ const userSchema = z.object({
 });
 
 export default function UserManagement() {
-    ACCOUNTING: { title: "Accounting Staff", color: "bg-green-600", icon: Shield },
-    TEACHER: { title: "Teachers", color: "bg-purple-600", icon: Users },
-  };
-
   const createUserMutation = useCreateUser();
   const { data: parents, isLoading: loadingParents } = useUsersByRole("PARENT");
   const { data: admins, isLoading: loadingAdmins } = useUsersByRole("ADMIN");
