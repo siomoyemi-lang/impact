@@ -1,5 +1,6 @@
 import { RoleLayout } from "@/components/layout-admin";
 import { useStudents, useUploadResult } from "@/hooks/use-admin";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -15,7 +16,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 export default function TeacherResults() {
-  const { data: students } = useStudents();
+  const { data: students } = useQuery<any[]>({ queryKey: ["/api/teacher/students"] });
   const uploadResultMutation = useUploadResult();
   const { toast } = useToast();
   const [open, setOpen] = useState(false);
